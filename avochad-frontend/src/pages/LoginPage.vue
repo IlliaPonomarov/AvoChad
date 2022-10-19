@@ -5,14 +5,14 @@
         <div class="text-white text-h5 justify-start items-start text-bold q-mb-lg">Sing In</div>
       </div>
       <div class="row">
-        <q-card square class="shadow-24" style="width:400px;height:270px;">
+        <q-card square class="shadow-24">
           <q-card-section class="q-pa-lg-lg">
-            <q-form class="q-gutter-lg-md" @submit.prevent.stop="onSubmit" @reset.prevent.stop="onReset()">
+            <q-form class="q-gutter-lg-md" @submit.prevent.stop="onSubmit()">
               <q-input
-                       :rules="emailRules"
+                       :rules="emailValidate"
                        filled
                        class="q-ma-lg-md"
-                       v-model="email"
+                       v-model="loginFormState.email"
                        ref="emailRef"
                        standout type="email"
                        hint="Enter your email"
@@ -25,9 +25,9 @@
               </q-input>
               <br/>
               <q-input
-                :rules="passwordRules"
+                :rules="passwordValidate"
                 class="q-ma-lg-md"
-                v-model="password"
+                v-model="loginFormState.password"
                 ref="passwordRef"
                 type="password"
                 standout
@@ -62,42 +62,32 @@
 import MyButton from "../components/MyButton.vue"
 import Validator from '../validation/Validator'
 import { useQuasar } from "quasar"
-import { ref } from "vue"
-import {strict} from "assert";
+import { reactive } from "vue"
+
 export default {
   name: "LoginPage",
   components: { MyButton },
+
   setup () {
-    const $q = useQuasar()
+    const emailValidate = [(val: string) => Validator.emailValidation(val) || 'Enter email correctly']
+    const passwordValidate = [(val: string) => Validator.passwordValidation(val) || 'Enter password correctly']
 
-    const email = ref(null)
-    const emailRef = ref(null)
+    type AccountFormState = {
+      email: string;
+      password: string;
+    };
 
-    const passwordRef = ref(null)
-    const password = ref(null)
+    const loginFormState: AccountFormState = reactive({
+      email: '',
+      password: ''
+    })
 
-    const accept = ref(false)
+    function onSubmit (): void {
+      console.log('loginFormState', loginFormState)
+    }
 
     return {
-      email,
-      emailRef,
-      emailRules: [(val: string) => Validator.emailValidation(val) || "Please type email correctly"],
-
-      password,
-      passwordRef,
-      passwordRules: [(val: string) => Validator.passwordValidation(val) || "Please type password correctly"],
-
-      accept,
-
-      onSubmit () {
-
-        if(Validator.passwordValidation((password as string)) )
-      },
-
-      onReset () {
-        email.value = null
-        password.value = null
-      }
+      loginFormState, onSubmit, emailValidate, passwordValidate
     }
   }
 }
