@@ -47,11 +47,11 @@
           <q-card-actions class="q-px-lg">
             <MyButton button-label="sing in"></MyButton>
             <MyButton class="q-ml-lg" button-label="sing up"></MyButton>
-
+            <q-card class="text-center q-ml-lg-auto">
+              <p class="text-grey-6">Forgot password?</p>
+            </q-card>
           </q-card-actions>
-          <q-card-section class="text-center q-pa-sm">
-            <p class="text-grey-6">Forgot password?</p>
-          </q-card-section>
+
         </q-card>
       </div>
     </div>
@@ -63,6 +63,7 @@ import MyButton from "../components/MyButton.vue"
 import Validator from '../validation/Validator'
 import { useQuasar } from "quasar"
 import { ref } from "vue"
+import {strict} from "assert";
 export default {
   name: "LoginPage",
   components: { MyButton },
@@ -89,37 +90,13 @@ export default {
       accept,
 
       onSubmit () {
-        if (emailRef != null) {
 
-          emailRef.value.validate()
-          passwordRef.value.validate()
-
-        }
-
-        if (emailRef.value.hasError() || passwordRef.value.hasError)
-          console.log('error validation')
-
-        else if (accept.value !== true) {
-          $q.notify({
-            color: 'negative',
-            message: 'You need to accept the license and terms first'
-          })
-        }
-        else {
-          $q.notify({
-            icon: 'done',
-            color: 'positive',
-            message: 'Submitted'
-          })
-        }
+        if(Validator.passwordValidation((password as string)) )
       },
 
       onReset () {
         email.value = null
         password.value = null
-
-        emailRef.value.resetValidation()
-        passwordRef.value.resetValidation()
       }
     }
   }
