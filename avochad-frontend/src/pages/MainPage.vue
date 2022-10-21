@@ -1,14 +1,10 @@
 <template>
-  <div class="q-pa-md">
-    <q-layout>
-
-    </q-layout>
-  </div>
+$END$
 </template>
 
 <script>
 export default {
-  name: "ChatLayout"
+name: "MainPage"
 }
 </script>
 
