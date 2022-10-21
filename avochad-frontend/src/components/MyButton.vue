@@ -1,6 +1,6 @@
 <template>
   <div class="my-button">
-    <q-btn color="black" >{{ buttonLabel }}</q-btn>
+    <q-btn type="{{ btnType }}" color="black" >{{ btnLabel }}</q-btn>
   </div>
 </template>
 
@@ -8,7 +8,8 @@
 export default {
   name: "MyButton",
   props: {
-    buttonLabel: String
+    btnLabel: String,
+    btnType: String
   }
 
 }
