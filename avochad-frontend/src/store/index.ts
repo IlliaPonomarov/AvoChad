@@ -1,6 +1,8 @@
 import { store } from 'quasar/wrappers'
 import { InjectionKey } from 'vue'
 import { Router } from 'vue-router'
+import { createPinia, defineStore } from 'pinia'
+
 import {
   createStore,
   Store as VuexStore,
@@ -38,6 +40,7 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> = Symbol('vuex-ke
 
 // Provide typings for `this.$router` inside Vuex store
 export default store(function (/* { ssrContext } */) {
+  const pinia = createPinia()
   const Store = createStore<StateInterface>({
     modules: {
       // example
@@ -48,7 +51,7 @@ export default store(function (/* { ssrContext } */) {
     strict: !!process.env.DEBUGGING
   })
 
-  return Store
+  return pinia
 })
 
 export function useStore () {
