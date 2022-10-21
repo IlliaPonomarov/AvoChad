@@ -6,11 +6,11 @@
       </div>
       <div class="row">
         <q-card square class="shadow-24">
+          <q-form class="q-gutter-lg-md" @submit.prevent.stop="onSubmit()">
           <q-card-section class="q-pa-lg-lg">
-            <q-form class="q-gutter-lg-md" @submit.prevent.stop="onSubmit()">
               <q-input
                        :rules="emailValidate"
-                       filled
+
                        class="q-ma-lg-md"
                        v-model="loginFormState.email"
                        ref="emailRef"
@@ -41,17 +41,19 @@
                   <q-icon class="cursor-pointer" />
                 </template>
               </q-input>
-            </q-form>
+
           </q-card-section>
 
           <q-card-actions class="q-px-lg">
-            <MyButton button-label="sing in"></MyButton>
-            <MyButton class="q-ml-lg" button-label="sing up"></MyButton>
-            <q-card class="text-center q-ml-lg-auto">
-              <p class="text-grey-6">Forgot password?</p>
-            </q-card>
+            <MyButton btn-type="submit" btn-label="sing in"></MyButton>
+            <!--   I wait while you push your registration page, motherfucker         -->
+            <OutlineButtons btn-type="button" @click="$router.replace('/')" class="q-ml-lg" btn-label="sing up"></OutlineButtons>
           </q-card-actions>
-
+          </q-form>
+            <div class="text-center q-ml-lg q-mb-lg row">
+              <!--   Don't forgot about it           -->
+              <a href="#" class="text-grey-6">Forgot password?</a>
+            </div>
         </q-card>
       </div>
     </div>
@@ -63,10 +65,11 @@ import MyButton from "../components/MyButton.vue"
 import Validator from '../validation/Validator'
 import { useQuasar } from "quasar"
 import { reactive } from "vue"
+import OutlineButtons from "components/OutlineButtons.vue"
 
 export default {
   name: "LoginPage",
-  components: { MyButton },
+  components: { OutlineButtons, MyButton },
 
   setup () {
     const emailValidate = [(val: string) => Validator.emailValidation(val) || 'Enter email correctly']
@@ -83,6 +86,7 @@ export default {
     })
 
     function onSubmit (): void {
+      console.log("Test submit")
       console.log('loginFormState', loginFormState)
     }
 
@@ -90,6 +94,7 @@ export default {
       loginFormState, onSubmit, emailValidate, passwordValidate
     }
   }
+
 }
 </script>
 
