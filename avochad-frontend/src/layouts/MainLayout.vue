@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh lpR lFf">
+      <q-layout view="lHh lpR lFf">
 
     <q-header bordered class="bg-black text-white">
       <q-toolbar>
@@ -27,6 +27,32 @@
           </q-avatar>
           <div class="text-weight-bold">Razvan Stoenescu</div>
           <div> {{ store.authorizedUser.email }}</div>
+          <div>
+            <q-btn round flat icon="more_horiz">
+              <q-menu auto-close :offset="[110, 8]">
+                <q-list style="min-width: 150px">
+                  <q-item clickable>
+                    <q-item-section>New chat</q-item-section>
+                  </q-item>
+<!--                  <q-item clickable>-->
+<!--                    <q-item-section>Profile</q-item-section>-->
+<!--                  </q-item>-->
+<!--                  <q-item clickable>-->
+<!--                    <q-item-section>Archived</q-item-section>-->
+<!--                  </q-item>-->
+<!--                  <q-item clickable>-->
+<!--                    <q-item-section>Favorites</q-item-section>-->
+<!--                  </q-item>-->
+                  <q-item clickable>
+                    <q-item-section>Settings</q-item-section>
+                  </q-item>
+                  <q-item clickable @click="logout()">
+                    <q-item-section>Logout</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </div>
         </div>
       </q-img>
     </div>
@@ -34,32 +60,48 @@
         <q-input
           v-model="search"
           square filled
-          placeholder="Search"
+          placeholder="search ..."
           color="white"
         >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
         </q-input>
+
         <q-list padding>
-          <q-item v-for="(chat, index) in store.chats" :key="chat.id" clickable v-ripple @click="setCurrentConversation(index)" >
-            <q-item-section avatar>
-              <q-avatar>
-                <img :src="chat.avatar">
-              </q-avatar>
-            </q-item-section>
+          <q-item v-for="(chat, index) in filteredUserList()" :key="chat.id" clickable v-ripple @click="setCurrentConversation(index)" >
+              <q-item-section avatar>
+                <q-avatar>
+                  <img :src="chat.avatar">
+                </q-avatar>
+              </q-item-section>
 
-            <q-item-section>
-              <q-item-label> {{ chat.title }} </q-item-label>
+              <q-item-section>
+                <q-item-label> {{ chat.title }} </q-item-label>
 
-              <div v-if="chat.lastMessage === ''">
-                <q-item-label caption lines="1">empty chat</q-item-label>
-              </div>
-              <div v-else>
-                <q-item-label caption lines="1"> {{ chat.lastMessage }} </q-item-label>
+                <div v-if="chat.lastMessage === ''">
+                  <q-item-label caption lines="1">empty chat</q-item-label>
+                </div>
+                <div v-else>
+                  <q-item-label caption lines="1"> {{ chat.lastMessage }} </q-item-label>
+                </div>
 
-              </div>
-            </q-item-section>
+                <div v-if="chat.stats">
+                  <q-item-label class="items-end justify-end q-mr-lg" style="color: #005adf">
+                    <q-chip outline color="teal" text-color="white">
+                      online
+                    </q-chip>
+                  </q-item-label>
+                </div>
+                <div v-else>
+                  <q-item-label class="items-end justify-end q-mr-lg" style="color: #005adf">
+                    <q-chip outline color="grey" text-color="white">
+                      offline
+                    </q-chip>
+                  </q-item-label>
+                </div>
+
+              </q-item-section>
           </q-item>
 
         </q-list>
@@ -72,53 +114,7 @@
 <!--      </q-scroll-area>-->
 
     </q-drawer>
-
     <q-page-container>
-      <div class="q-pb-md absolute-bottom row justify-end items-end">
-        <div style="width: 100%; max-width: 930px">
-          <q-chat-message
-            :text="['Have you seen Quasar?']"
-            sent
-            text-color="white"
-            bg-color="primary"
-          >
-            <template v-slot:name>me</template>
-            <template v-slot:stamp>7 minutes ago</template>
-            <template v-slot:avatar>
-              <img
-                class="q-message-avatar q-message-avatar--sent"
-                src="https://cdn.quasar.dev/img/avatar4.jpg"
-              >
-            </template>
-          </q-chat-message>
-
-          <q-chat-message
-            bg-color="amber"
-          >
-            <template v-slot:name>Mary</template>
-            <template v-slot:avatar>
-              <img
-                class="q-message-avatar q-message-avatar--received"
-                :src="currentConversation.avatar"
-              >
-            </template>
-
-            <div>
-              Already building an app with it...
-            </div>
-
-            <q-spinner-dots size="2rem" />
-          </q-chat-message>
-        </div>
-      </div>
-      <q-footer class="bg-grey-10">
-        <q-input square standout color="white" v-model="text" label="write message ..."  maxlength="6000" :dense="dense">
-          <template v-slot:append>
-            <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer" />
-            <q-btn round dense flat icon="send" />
-          </template>
-        </q-input>
-      </q-footer>
       <router-view />
     </q-page-container>
 
@@ -129,28 +125,48 @@
 import { reactive, ref, computed } from "vue"
 import { useStore } from 'vuex'
 import useMainStore from "src/store/chatStore"
+import { useRouter } from "vue-router"
 
 export default {
   name: "ChatLayout",
 
-  setup () {
+  setup: function () {
     // const leftDrawerOpen = ref(false)
     const leftDrawerOpen = ref(true)
     const currentConversationIndex = ref(0)
     const store = useMainStore()
+    const search = ref("")
+    const router = useRouter()
 
     const currentConversation = computed(() => {
-      return store.chats[currentConversationIndex.value]
+      return store.chats[store.currentConversationIndex]
     })
 
     function setCurrentConversation (index: number) {
       currentConversationIndex.value = index
+      store.currentConversationIndex = currentConversationIndex.value
+      console.log(store.currentConversationIndex)
+    }
+
+    function logout () {
+      store.authorizedUser = {
+        email: '',
+        password: ''
+      }
+      router.push("/login")
+    }
+
+    function filteredUserList () {
+      return store.getChats.filter((chat) => chat.title.toLowerCase().includes(search.value.toLowerCase()))
     }
 
     return {
       leftDrawerOpen,
       store,
+      logout,
       currentConversation,
+      search,
+      filteredUserList,
       setCurrentConversation,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
