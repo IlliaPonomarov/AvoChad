@@ -26,23 +26,14 @@
             <img src="icons/pepe-frog.png">
           </q-avatar>
           <div class="text-weight-bold">Razvan Stoenescu</div>
-          <div> {{ store.authorizedUser.email }}</div>
-          <div>
+
+          <div> {{ store.authorizedUser.email }}
             <q-btn round flat icon="more_horiz">
-              <q-menu auto-close :offset="[110, 8]">
+              <q-menu  auto-close :offset="[110, 8]">
                 <q-list style="min-width: 150px">
-                  <q-item clickable>
-                    <q-item-section>New chat</q-item-section>
+                  <q-item clickable @click="createNewChat()">
+                    <q-item-label>New chat</q-item-label>
                   </q-item>
-<!--                  <q-item clickable>-->
-<!--                    <q-item-section>Profile</q-item-section>-->
-<!--                  </q-item>-->
-<!--                  <q-item clickable>-->
-<!--                    <q-item-section>Archived</q-item-section>-->
-<!--                  </q-item>-->
-<!--                  <q-item clickable>-->
-<!--                    <q-item-section>Favorites</q-item-section>-->
-<!--                  </q-item>-->
                   <q-item clickable>
                     <q-item-section>Settings</q-item-section>
                   </q-item>
@@ -53,6 +44,7 @@
               </q-menu>
             </q-btn>
           </div>
+
         </div>
       </q-img>
     </div>
@@ -123,9 +115,9 @@
 
 <script lang="ts">
 import { reactive, ref, computed } from "vue"
-import { useStore } from 'vuex'
 import useMainStore from "src/store/chatStore"
 import { useRouter } from "vue-router"
+import { useQuasar } from "quasar"
 
 export default {
   name: "ChatLayout",
@@ -137,6 +129,7 @@ export default {
     const store = useMainStore()
     const search = ref("")
     const router = useRouter()
+    const $q = useQuasar()
 
     const currentConversation = computed(() => {
       return store.chats[store.currentConversationIndex]
@@ -160,14 +153,25 @@ export default {
       return store.getChats.filter((chat) => chat.title.toLowerCase().includes(search.value.toLowerCase()))
     }
 
+    function createNewChat () {
+      $q.dialog({
+        title: 'Create Chat',
+        message: 'something ...'
+      }).onOk(() => {
+        console.log('ok ok ok')
+      })
+    }
+
     return {
       leftDrawerOpen,
       store,
       logout,
+
       currentConversation,
       search,
       filteredUserList,
       setCurrentConversation,
+      createNewChat,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
