@@ -50,9 +50,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, onMounted } from "vue"
 import Validator from 'src/validation/Validator'
 
-export default {
+export default defineComponent({
   name: 'RegisterPage',
   setup () {
     return {
@@ -68,23 +69,23 @@ export default {
   },
   data () {
     return {
-      name: '',
-      email: '',
-      password: '',
-      password2: ''
+      name: '' as string,
+      email: '' as string,
+      password: '' as string,
+      password2: '' as string
     }
   },
   methods: {
-    onSubmit () {
+    onSubmit (): void {
       console.log('submit')
       window.location.href = '/#/'
     },
-    onReset () {
+    onReset (): void {
       console.log('reset')
     },
-    passMatch () {
+    passMatch (): boolean {
       return this.password === this.password2
     }
   }
-}
+})
 </script>
