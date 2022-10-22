@@ -16,12 +16,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '/chats', component: () => import('pages/MainPage.vue') }]
   },
-  // {
-  //   path: '/login',
-  //   component: () => import('pages/LoginPage.vue'),
-  // },
-  // Always leave this as last one,
-  // but you can also remove it
+  {
+    path: '/create/chat',
+    component: () => import('layouts/CreateChatLayout.vue'),
+    children: [{ path: '/create/chat', component: () => import('pages/CreateChatPage.vue') }]
+  },
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue')

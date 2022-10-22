@@ -31,7 +31,7 @@
             <q-btn round flat icon="more_horiz">
               <q-menu  auto-close :offset="[110, 8]">
                 <q-list style="min-width: 150px">
-                  <q-item clickable @click="createNewChat()">
+                  <q-item clickable @click="$router.push('/create/chat')">
                     <q-item-label>New chat</q-item-label>
                   </q-item>
                   <q-item clickable>
@@ -121,7 +121,6 @@ import { useQuasar } from "quasar"
 
 export default {
   name: "ChatLayout",
-
   setup: function () {
     // const leftDrawerOpen = ref(false)
     const leftDrawerOpen = ref(true)
@@ -153,25 +152,14 @@ export default {
       return store.getChats.filter((chat) => chat.title.toLowerCase().includes(search.value.toLowerCase()))
     }
 
-    function createNewChat () {
-      $q.dialog({
-        title: 'Create Chat',
-        message: 'something ...'
-      }).onOk(() => {
-        console.log('ok ok ok')
-      })
-    }
-
     return {
       leftDrawerOpen,
       store,
       logout,
-
       currentConversation,
       search,
       filteredUserList,
       setCurrentConversation,
-      createNewChat,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }

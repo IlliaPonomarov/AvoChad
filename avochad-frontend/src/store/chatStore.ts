@@ -8,6 +8,16 @@ interface MainState {
   authorizedUser: object
 }
 
+interface ChatInterface {
+  id: number
+  title: string
+  avatar: string
+  lastMessage: string
+  time: string
+  sent: boolean
+  stats: boolean
+}
+
 export const useMainStore = defineStore('main', {
 
   state: () => {
@@ -54,11 +64,43 @@ export const useMainStore = defineStore('main', {
           sent: true,
           stats: false
         }
+      ],
+      users: [
+        {
+          id: 1,
+          username: 'Illia',
+          avatar: 'https://cdn.quasar.dev/team/dan_popescu.jpg',
+          stats: false,
+          time: '23.00',
+          sent: true
+        },
+        {
+          id: 2,
+          username: 'Igor',
+          avatar: 'https://cdn.quasar.dev/team/dan_popescu.jpg',
+          stats: false,
+          time: '3.00',
+          sent: true
+        },
+        {
+          id: 3,
+          username: 'Gosha',
+          avatar: 'https://cdn.quasar.dev/team/dan_popescu.jpg',
+          stats: false,
+          time: '7.00',
+          sent: true
+        }
       ]
     }
   },
   getters: {
-    getChats: (state) => state.chats
+    getChats: (state) => state.chats,
+    getUsers: (state) => state.users
+  },
+  actions: {
+    addChats (user: ChatInterface) {
+      this.chats.push(user)
+    }
   }
 
 })
