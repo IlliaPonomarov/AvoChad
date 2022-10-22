@@ -1,10 +1,11 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
-import { ExampleStateInterface } from './state'
+import { MainStateInterface } from './state'
+import { CURRENT_AUTHORIZED_USER } from './mutations'
 
-const getters: GetterTree<ExampleStateInterface, StateInterface> = {
-  someAction (/* context */) {
-    // your code
+const getters: GetterTree<MainStateInterface, StateInterface> = {
+  [CURRENT_AUTHORIZED_USER] (state) {
+    return state.authorizedUser
   }
 }
 

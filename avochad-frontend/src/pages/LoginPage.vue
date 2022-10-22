@@ -10,14 +10,14 @@
           <q-card-section class="q-pa-lg-lg">
               <q-input
                        :rules="emailValidate"
-
                        class="q-ma-lg-md"
                        v-model="loginFormState.email"
                        ref="emailRef"
-                       standout type="email"
+                       standout
+                       type="text"
                        hint="Enter your email"
                        lazy-rules
-                       label="Email">
+                       label="Email / Nickname">
 
                 <template v-slot:prepend>
                   <q-icon name="email" />
@@ -64,17 +64,23 @@
 import MyButton from "../components/MyButton.vue"
 import Validator from '../validation/Validator'
 import { useQuasar } from "quasar"
-import { reactive } from "vue"
+import { computed, reactive } from "vue"
 import OutlineButtons from "components/OutlineButtons.vue"
+import { mapActions, mapGetters, useStore } from "vuex"
+import useMainStore from "src/store/chatStore"
+import router from "src/router"
+import { useRoute, useRouter } from "vue-router"
 
 export default {
   name: "LoginPage",
   components: { OutlineButtons, MyButton },
 
   setup () {
-    const emailValidate = [(val: string) => Validator.emailValidation(val) || 'Enter email correctly']
+    const emailValidate = [(val: string) => Validator.emailValidation(val) || Validator.nicknameValidation(val) || 'Enter email correctly']
     const passwordValidate = [(val: string) => Validator.passwordValidation(val) || 'Enter password correctly']
-
+    const store = useMainStore()
+    const router = useRouter()
+    const route = useRoute()
     type AccountFormState = {
       email: string;
       password: string;
@@ -86,8 +92,17 @@ export default {
     })
 
     function onSubmit (): void {
-      console.log("Test submit")
-      console.log('loginFormState', loginFormState)
+      const emailL = loginFormState.email
+      const pass = loginFormState.password
+
+      store.authorizedUser = {
+        email: emailL,
+        password: pass
+      }
+
+      router.push({
+        path: '/chats'
+      })
     }
 
     return {

@@ -1,10 +1,11 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { ExampleStateInterface } from './state'
+import { MainStateInterface } from './state'
+import { CURRENT_AUTHORIZED_USER } from './mutations'
 
-const actions: ActionTree<ExampleStateInterface, StateInterface> = {
-  someAction (/* context */) {
-    // your code
+const actions: ActionTree<MainStateInterface, StateInterface> = {
+  [CURRENT_AUTHORIZED_USER] (context, authorizedUser: object) {
+    context.commit(CURRENT_AUTHORIZED_USER, authorizedUser)
   }
 }
 

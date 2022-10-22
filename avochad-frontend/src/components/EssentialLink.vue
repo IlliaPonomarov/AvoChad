@@ -30,7 +30,7 @@ export default defineComponent({
       required: true
     },
 
-    caption: {
+    lastMessage: {
       type: String,
       default: ''
     },

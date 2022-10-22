@@ -1,111 +1,185 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+      <q-layout view="lHh lpR lFf">
+
+    <q-header bordered class="bg-black text-white">
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+
+        <q-btn round flat>
+          <q-avatar>
+            <img :src="currentConversation.avatar">
+          </q-avatar>
+        </q-btn>
 
         <q-toolbar-title>
-          Quasar App
+          {{ currentConversation.title }}
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
-<!--    <q-drawer-->
-<!--      v-model="leftDrawerOpen"-->
-<!--      show-if-above-->
-<!--      bordered-->
-<!--    >-->
-<!--      <q-list>-->
-<!--        <q-item-label-->
-<!--          header-->
-<!--        >-->
-<!--          Essential Links-->
-<!--        </q-item-label>-->
+    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+    <div class="column">
+      <q-img class="absolute-top" src="icons/grey-background.jpg" style="height: 150px">
+        <div class="absolute-bottom bg-transparent">
+          <q-avatar size="56px" class="q-mb-sm">
+            <img src="icons/pepe-frog.png">
+          </q-avatar>
+          <div class="text-weight-bold">Razvan Stoenescu</div>
 
-<!--        <EssentialLink-->
-<!--          v-for="link in essentialLinks"-->
-<!--          :key="link.title"-->
-<!--          v-bind="link"-->
-<!--        />-->
-<!--      </q-list>-->
-<!--    </q-drawer>-->
+          <div> {{ store.authorizedUser.email }}
+            <q-btn round flat icon="more_horiz">
+              <q-menu  auto-close :offset="[110, 8]">
+                <q-list style="min-width: 150px">
+                  <q-item clickable @click="createNewChat()">
+                    <q-item-label>New chat</q-item-label>
+                  </q-item>
+                  <q-item clickable>
+                    <q-item-section>Settings</q-item-section>
+                  </q-item>
+                  <q-item clickable @click="logout()">
+                    <q-item-section>Logout</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </div>
 
+        </div>
+      </q-img>
+    </div>
+      <q-scroll-area style="height: calc(100% - 180px); margin-top: 150px; border-right: 1px solid #ddd">
+        <q-input
+          v-model="search"
+          square filled
+          placeholder="search ..."
+          color="white"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+
+        <q-list padding>
+          <q-item v-for="(chat, index) in filteredUserList()" :key="chat.id" clickable v-ripple @click="setCurrentConversation(index)" >
+              <q-item-section avatar>
+                <q-avatar>
+                  <img :src="chat.avatar">
+                </q-avatar>
+              </q-item-section>
+
+              <q-item-section>
+                <q-item-label> {{ chat.title }} </q-item-label>
+
+                <div v-if="chat.lastMessage === ''">
+                  <q-item-label caption lines="1">empty chat</q-item-label>
+                </div>
+                <div v-else>
+                  <q-item-label caption lines="1"> {{ chat.lastMessage }} </q-item-label>
+                </div>
+
+                <div v-if="chat.stats">
+                  <q-item-label class="items-end justify-end q-mr-lg" style="color: #005adf">
+                    <q-chip outline color="teal" text-color="white">
+                      online
+                    </q-chip>
+                  </q-item-label>
+                </div>
+                <div v-else>
+                  <q-item-label class="items-end justify-end q-mr-lg" style="color: #005adf">
+                    <q-chip outline color="grey" text-color="white">
+                      offline
+                    </q-chip>
+                  </q-item-label>
+                </div>
+
+              </q-item-section>
+          </q-item>
+
+        </q-list>
+      </q-scroll-area>
+<!--      <q-scroll-area>-->
+<!--        <q-list bordered>-->
+<!--          <q-item v-for="chat in chats" :key="chat.id" class="q-mb-sm" clickable v-ripple>-->
+<!--          </q-item>-->
+<!--        </q-list>-->
+<!--      </q-scroll-area>-->
+
+    </q-drawer>
     <q-page-container>
       <router-view />
     </q-page-container>
+
   </q-layout>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { reactive, ref, computed } from "vue"
+import useMainStore from "src/store/chatStore"
+import { useRouter } from "vue-router"
+import { useQuasar } from "quasar"
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
+export default {
+  name: "ChatLayout",
 
-export default defineComponent({
-  name: 'MainLayout',
+  setup: function () {
+    // const leftDrawerOpen = ref(false)
+    const leftDrawerOpen = ref(true)
+    const currentConversationIndex = ref(0)
+    const store = useMainStore()
+    const search = ref("")
+    const router = useRouter()
+    const $q = useQuasar()
 
-  setup () {
-    const leftDrawerOpen = ref(false)
+    const currentConversation = computed(() => {
+      return store.chats[store.currentConversationIndex]
+    })
+
+    function setCurrentConversation (index: number) {
+      currentConversationIndex.value = index
+      store.currentConversationIndex = currentConversationIndex.value
+      console.log(store.currentConversationIndex)
+    }
+
+    function logout () {
+      store.authorizedUser = {
+        email: '',
+        password: ''
+      }
+      router.push("/login")
+    }
+
+    function filteredUserList () {
+      return store.getChats.filter((chat) => chat.title.toLowerCase().includes(search.value.toLowerCase()))
+    }
+
+    function createNewChat () {
+      $q.dialog({
+        title: 'Create Chat',
+        message: 'something ...'
+      }).onOk(() => {
+        console.log('ok ok ok')
+      })
+    }
 
     return {
-      essentialLinks: linksList,
       leftDrawerOpen,
+      store,
+      logout,
+
+      currentConversation,
+      search,
+      filteredUserList,
+      setCurrentConversation,
+      createNewChat,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
     }
   }
-})
+}
 </script>
+
+<style scoped>
+
+</style>

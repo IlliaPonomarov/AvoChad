@@ -1,10 +1,14 @@
 import { MutationTree } from 'vuex'
-import { ExampleStateInterface } from './state'
+import { MainStateInterface } from './state'
 
-const mutation: MutationTree<ExampleStateInterface> = {
-  someMutation (/* state: ExampleStateInterface */) {
-    // your code
+export const CURRENT_AUTHORIZED_USER = 'currentAuthorizedUser'
+
+const mutation: MutationTree<MainStateInterface> = {
+
+  [CURRENT_AUTHORIZED_USER] (state, currentAuthorizedUser: object) {
+    state.authorizedUser = currentAuthorizedUser
   }
+
 }
 
 export default mutation
