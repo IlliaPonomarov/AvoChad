@@ -5,14 +5,14 @@
         <div class="text-white text-h5 justify-start items-start text-bold q-mb-lg">Sing In</div>
       </div>
       <div class="row">
-        <q-card square class="shadow-24" style="width:400px;height:270px;">
+        <q-card square class="shadow-24">
+          <q-form class="q-gutter-lg-md" @submit.prevent.stop="onSubmit()">
           <q-card-section class="q-pa-lg-lg">
-            <q-form class="q-gutter-lg-md" @submit.prevent.stop="onSubmit" @reset.prevent.stop="onReset()">
               <q-input
-                       :rules="emailRules"
-                       filled
+                       :rules="emailValidate"
+
                        class="q-ma-lg-md"
-                       v-model="email"
+                       v-model="loginFormState.email"
                        ref="emailRef"
                        standout type="email"
                        hint="Enter your email"
@@ -25,9 +25,9 @@
               </q-input>
               <br/>
               <q-input
-                :rules="passwordRules"
+                :rules="passwordValidate"
                 class="q-ma-lg-md"
-                v-model="password"
+                v-model="loginFormState.password"
                 ref="passwordRef"
                 type="password"
                 standout
@@ -41,17 +41,19 @@
                   <q-icon class="cursor-pointer" />
                 </template>
               </q-input>
-            </q-form>
+
           </q-card-section>
 
           <q-card-actions class="q-px-lg">
-            <MyButton button-label="sing in"></MyButton>
-            <MyButton class="q-ml-lg" button-label="sing up"></MyButton>
-
+            <MyButton btn-type="submit" btn-label="sing in"></MyButton>
+            <!--   I wait while you push your registration page, motherfucker         -->
+            <OutlineButtons btn-type="button" @click="$router.replace('/')" class="q-ml-lg" btn-label="sing up"></OutlineButtons>
           </q-card-actions>
-          <q-card-section class="text-center q-pa-sm">
-            <p class="text-grey-6">Forgot password?</p>
-          </q-card-section>
+          </q-form>
+            <div class="text-center q-ml-lg q-mb-lg row">
+              <!--   Don't forgot about it           -->
+              <a href="#" class="text-grey-6">Forgot password?</a>
+            </div>
         </q-card>
       </div>
     </div>
@@ -62,67 +64,37 @@
 import MyButton from "../components/MyButton.vue"
 import Validator from '../validation/Validator'
 import { useQuasar } from "quasar"
-import { ref } from "vue"
+import { reactive } from "vue"
+import OutlineButtons from "components/OutlineButtons.vue"
+
 export default {
   name: "LoginPage",
-  components: { MyButton },
+  components: { OutlineButtons, MyButton },
+
   setup () {
-    const $q = useQuasar()
+    const emailValidate = [(val: string) => Validator.emailValidation(val) || 'Enter email correctly']
+    const passwordValidate = [(val: string) => Validator.passwordValidation(val) || 'Enter password correctly']
 
-    const email = ref(null)
-    const emailRef = ref(null)
+    type AccountFormState = {
+      email: string;
+      password: string;
+    };
 
-    const passwordRef = ref(null)
-    const password = ref(null)
+    const loginFormState: AccountFormState = reactive({
+      email: '',
+      password: ''
+    })
 
-    const accept = ref(false)
+    function onSubmit (): void {
+      console.log("Test submit")
+      console.log('loginFormState', loginFormState)
+    }
 
     return {
-      email,
-      emailRef,
-      emailRules: [(val: string) => Validator.emailValidation(val) || "Please type email correctly"],
-
-      password,
-      passwordRef,
-      passwordRules: [(val: string) => Validator.passwordValidation(val) || "Please type password correctly"],
-
-      accept,
-
-      onSubmit () {
-        if (emailRef != null) {
-
-          emailRef.value.validate()
-          passwordRef.value.validate()
-
-        }
-
-        if (emailRef.value.hasError() || passwordRef.value.hasError)
-          console.log('error validation')
-
-        else if (accept.value !== true) {
-          $q.notify({
-            color: 'negative',
-            message: 'You need to accept the license and terms first'
-          })
-        }
-        else {
-          $q.notify({
-            icon: 'done',
-            color: 'positive',
-            message: 'Submitted'
-          })
-        }
-      },
-
-      onReset () {
-        email.value = null
-        password.value = null
-
-        emailRef.value.resetValidation()
-        passwordRef.value.resetValidation()
-      }
+      loginFormState, onSubmit, emailValidate, passwordValidate
     }
   }
+
 }
 </script>
 
