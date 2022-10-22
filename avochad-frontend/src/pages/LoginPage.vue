@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <q-page>
     <div class="column q-pa-lg window-height window-width row justify-center items-center">
       <div class="row">
@@ -100,4 +100,4 @@ export default {
 
 <style scoped>
 
-</style>
+</style> -->
