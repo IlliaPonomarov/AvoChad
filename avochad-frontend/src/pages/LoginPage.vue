@@ -63,12 +63,9 @@
 <script lang="ts">
 import MyButton from "../components/MyButton.vue"
 import Validator from '../validation/Validator'
-import { useQuasar } from "quasar"
 import { computed, reactive } from "vue"
 import OutlineButtons from "components/OutlineButtons.vue"
-import { mapActions, mapGetters, useStore } from "vuex"
 import useMainStore from "src/store/chatStore"
-import router from "src/router"
 import { useRoute, useRouter } from "vue-router"
 
 export default {

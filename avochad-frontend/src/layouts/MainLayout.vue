@@ -2,20 +2,48 @@
       <q-layout view="lHh lpR lFf">
 
     <q-header bordered class="bg-black text-white">
-      <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+      <div class="row">
+        <div class="column">
+          <q-toolbar>
+            <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
-        <q-btn round flat>
-          <q-avatar>
-            <img :src="currentConversation.avatar">
-          </q-avatar>
-        </q-btn>
+            <q-btn round flat>
+              <q-avatar>
+                <img :src="currentConversation.avatar">
+              </q-avatar>
+            </q-btn>
 
-        <q-toolbar-title>
-          {{ currentConversation.title }}
-        </q-toolbar-title>
+            <q-toolbar-title>
+              {{ currentConversation.title }}
+            </q-toolbar-title>
+            <q-btn round flat icon="more_horiz">
+              <q-menu  auto-close :offset="[110, 8]">
+                <q-list style="min-width: 150px">
+                  <q-item clickable>
+                    <q-item-section>Contact data</q-item-section>
+                  </q-item>
+                  <q-item clickable>
+                    <q-item-section>Block</q-item-section>
+                  </q-item>
+                  <q-item clickable>
+                    <q-item-section>Select messages</q-item-section>
+                  </q-item>
+                  <q-item clickable>
+                    <q-item-section>Silence</q-item-section>
+                  </q-item>
+                  <q-item clickable>
+                    <q-item-section>Clear messages</q-item-section>
+                  </q-item>
+                  <q-item clickable>
+                    <q-item-section>Erase messages</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </q-toolbar>
 
-      </q-toolbar>
+        </div>
+      </div>
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
@@ -31,7 +59,7 @@
             <q-btn round flat icon="more_horiz">
               <q-menu  auto-close :offset="[110, 8]">
                 <q-list style="min-width: 150px">
-                  <q-item clickable @click="createNewChat()">
+                  <q-item clickable @click="$router.push('/create/chat')">
                     <q-item-label>New chat</q-item-label>
                   </q-item>
                   <q-item clickable>
@@ -121,7 +149,6 @@ import { useQuasar } from "quasar"
 
 export default {
   name: "ChatLayout",
-
   setup: function () {
     // const leftDrawerOpen = ref(false)
     const leftDrawerOpen = ref(true)
@@ -130,6 +157,7 @@ export default {
     const search = ref("")
     const router = useRouter()
     const $q = useQuasar()
+    localStorage.setItem("conversation_id", '0')
 
     const currentConversation = computed(() => {
       return store.chats[store.currentConversationIndex]
@@ -138,6 +166,7 @@ export default {
     function setCurrentConversation (index: number) {
       currentConversationIndex.value = index
       store.currentConversationIndex = currentConversationIndex.value
+      localStorage.setItem("conversation_id", currentConversationIndex.value.toString())
       console.log(store.currentConversationIndex)
     }
 
@@ -153,25 +182,14 @@ export default {
       return store.getChats.filter((chat: any) => chat.title.toLowerCase().includes(search.value.toLowerCase()))
     }
 
-    function createNewChat () {
-      $q.dialog({
-        title: 'Create Chat',
-        message: 'something ...'
-      }).onOk(() => {
-        console.log('ok ok ok')
-      })
-    }
-
     return {
       leftDrawerOpen,
       store,
       logout,
-
       currentConversation,
       search,
       filteredUserList,
       setCurrentConversation,
-      createNewChat,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
