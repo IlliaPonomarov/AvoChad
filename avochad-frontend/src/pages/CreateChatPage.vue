@@ -14,12 +14,12 @@
         <q-item v-for="(user, index) in userFilter()" :key="user.id" clickable v-ripple @click="addChat(index)" >
           <q-item-section avatar>
             <q-avatar>
-              <img :src="user.avatar">
+              <img :src="user.avatar.path">
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <q-item-label> {{ user.username }} </q-item-label>
+            <q-item-label> {{ user.firstName }} {{ user.lastName }} </q-item-label>
 
           </q-item-section>
         </q-item>
@@ -28,36 +28,33 @@
 </template>
 
 <script>
-import { reactive, ref, computed } from "vue"
-import useMainStore from "src/store/chatStore"
-import { useRouter } from "vue-router"
-import { useQuasar } from "quasar"
+import { reactive, ref, computed } from 'vue'
+import { useChatStore } from 'src/store/baseStore'
+import { useRouter } from 'vue-router'
 
 export default {
-  name: "CreateChatPage",
+  name: 'CreateChatPage',
   setup () {
-    const store = useMainStore()
-    const search = ref("")
-    const userIndex = ref(-1)
+    const store = useChatStore()
+    const search = ref('')
     const router = useRouter()
+
     function userFilter () {
-      return store.getUsers.filter((user) => user.username.toLowerCase().includes(search.value.toLowerCase()))
+      return store.getUsers.filter((user) => (user.firstName.toLowerCase().includes(search.value.toLowerCase())) || user.lastName.toLowerCase().includes(search.value.toLowerCase()))
     }
 
     function addChat (index) {
       const selectedUser = store.getUsers[index]
       const chats = store.getChats
-      store.addChats({
-        id: chats[chats.length - 1] + 1,
-        title: selectedUser.username,
-        avatar: selectedUser.avatar,
-        lastMessage: '',
-        stats: false,
-        time: (new Date().getHours()),
-        sent: false
-      })
-
-      router.push("/chats")
+      store.addChat(
+        {
+          id: chats.length + 1,
+          name: selectedUser.firstName + ' ' + selectedUser.lastName,
+          avatar: selectedUser.avatar,
+          messages: []
+        }
+      )
+      router.push('/chats')
     }
     return {
       store,

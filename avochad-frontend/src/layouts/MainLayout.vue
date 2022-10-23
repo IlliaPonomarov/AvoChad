@@ -9,12 +9,12 @@
 
             <q-btn round flat>
               <q-avatar>
-                <img :src="currentConversation.avatar">
+                <img :src="store.getCurrentChat?.avatar.path">
               </q-avatar>
             </q-btn>
 
             <q-toolbar-title>
-              {{ currentConversation.title }}
+              {{ store.getCurrentChat?.name }}
             </q-toolbar-title>
             <q-btn round flat icon="more_horiz">
               <q-menu  auto-close :offset="[110, 8]">
@@ -55,7 +55,7 @@
           </q-avatar>
           <div class="text-weight-bold">Razvan Stoenescu</div>
 
-          <div> {{ store.authorizedUser.email }}
+          <div> {{ store.authorizedUser?.firstName }} {{ store.authorizedUser?.lastName }}
             <q-btn round flat icon="more_horiz">
               <q-menu  auto-close :offset="[110, 8]">
                 <q-list style="min-width: 150px">
@@ -76,62 +76,33 @@
         </div>
       </q-img>
     </div>
-      <q-scroll-area style="height: calc(100% - 180px); margin-top: 150px; border-right: 1px solid #ddd">
-        <q-input
-          v-model="search"
-          square filled
-          placeholder="search ..."
-          color="white"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+    <q-scroll-area style="height: calc(100% - 180px); margin-top: 150px; border-right: 1px solid #ddd">
+      <q-input
+        v-model="search"
+        square filled
+        placeholder="search ..."
+        color="white"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
 
-        <q-list padding>
-          <q-item v-for="(chat, index) in filteredUserList()" :key="chat.id" clickable v-ripple @click="setCurrentConversation(index)" >
-              <q-item-section avatar>
-                <q-avatar>
-                  <img :src="chat.avatar">
-                </q-avatar>
-              </q-item-section>
+      <q-list padding>
+        <q-item v-for="chat in findChats()" :key="chat.id" clickable v-ripple @click="setCurrentConversation(chat.id)" >
+            <q-item-section avatar>
+              <q-avatar>
+                <img :src="chat.avatar.path">
+              </q-avatar>
+            </q-item-section>
 
-              <q-item-section>
-                <q-item-label> {{ chat.title }} </q-item-label>
+            <q-item-section>
+              <q-item-label> {{ chat.name }} </q-item-label>
+            </q-item-section>
+        </q-item>
 
-                <div v-if="chat.lastMessage === ''">
-                  <q-item-label caption lines="1">empty chat</q-item-label>
-                </div>
-                <div v-else>
-                  <q-item-label caption lines="1"> {{ chat.lastMessage }} </q-item-label>
-                </div>
-
-                <div v-if="chat.stats">
-                  <q-item-label class="items-end justify-end q-mr-lg" style="color: #005adf">
-                    <q-chip outline color="teal" text-color="white">
-                      online
-                    </q-chip>
-                  </q-item-label>
-                </div>
-                <div v-else>
-                  <q-item-label class="items-end justify-end q-mr-lg" style="color: #005adf">
-                    <q-chip outline color="grey" text-color="white">
-                      offline
-                    </q-chip>
-                  </q-item-label>
-                </div>
-
-              </q-item-section>
-          </q-item>
-
-        </q-list>
-      </q-scroll-area>
-<!--      <q-scroll-area>-->
-<!--        <q-list bordered>-->
-<!--          <q-item v-for="chat in chats" :key="chat.id" class="q-mb-sm" clickable v-ripple>-->
-<!--          </q-item>-->
-<!--        </q-list>-->
-<!--      </q-scroll-area>-->
+      </q-list>
+    </q-scroll-area>
 
     </q-drawer>
     <q-page-container>
@@ -142,53 +113,47 @@
 </template>
 
 <script lang="ts">
-import { reactive, ref, computed } from "vue"
-import useMainStore from "src/store/chatStore"
-import { useRouter } from "vue-router"
-import { useQuasar } from "quasar"
+import { reactive, ref, computed } from 'vue'
+import { useChatStore } from 'src/store/baseStore'
+import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 export default {
-  name: "ChatLayout",
+  name: 'ChatLayout',
   setup: function () {
     // const leftDrawerOpen = ref(false)
     const leftDrawerOpen = ref(true)
-    const currentConversationIndex = ref(0)
-    const store = useMainStore()
-    const search = ref("")
+    const currentChat = ref(0)
+    const store = useChatStore()
+    const search = ref('')
     const router = useRouter()
     const $q = useQuasar()
-    localStorage.setItem("conversation_id", '0')
-
-    const currentConversation = computed(() => {
-      return store.chats[store.currentConversationIndex]
-    })
+    localStorage.setItem('conversation_id', '0')
 
     function setCurrentConversation (index: number) {
-      currentConversationIndex.value = index
-      store.currentConversationIndex = currentConversationIndex.value
-      localStorage.setItem("conversation_id", currentConversationIndex.value.toString())
-      console.log(store.currentConversationIndex)
+      currentChat.value = index
+      store.setCurrentChat(currentChat.value)
+      localStorage.setItem('conversation_id', currentChat.value.toString())
+      console.log(store.currentChat)
     }
 
     function logout () {
-      store.authorizedUser = {
-        email: '',
-        password: ''
-      }
-      router.push("/login")
+      store.logout()
+      router.push('/login')
     }
 
-    function filteredUserList () {
-      return store.getChats.filter((chat: any) => chat.title.toLowerCase().includes(search.value.toLowerCase()))
+    function findChats () {
+      return store.chats.filter((chat) => {
+        return chat.name.toLowerCase().includes(search.value.toLowerCase())
+      })
     }
 
     return {
       leftDrawerOpen,
       store,
       logout,
-      currentConversation,
       search,
-      filteredUserList,
+      findChats,
       setCurrentConversation,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value

@@ -61,21 +61,22 @@
 </template>
 
 <script lang="ts">
-import MyButton from "../components/MyButton.vue"
+import MyButton from '../components/MyButton.vue'
 import Validator from '../validation/Validator'
-import { computed, reactive } from "vue"
-import OutlineButtons from "components/OutlineButtons.vue"
-import useMainStore from "src/store/chatStore"
-import { useRoute, useRouter } from "vue-router"
+import { computed, reactive } from 'vue'
+import OutlineButtons from 'components/OutlineButtons.vue'
+// import useMainStore from 'src/store/chatStore'
+import { useRoute, useRouter } from 'vue-router'
+import { useChatStore } from 'src/store/baseStore'
 
 export default {
-  name: "LoginPage",
+  name: 'LoginPage',
   components: { OutlineButtons, MyButton },
 
   setup () {
     const emailValidate = [(val: string) => Validator.emailValidation(val) || Validator.nicknameValidation(val) || 'Enter email correctly']
     const passwordValidate = [(val: string) => Validator.passwordValidation(val) || 'Enter password correctly']
-    const store = useMainStore()
+    const store = useChatStore()
     const router = useRouter()
     const route = useRoute()
     type AccountFormState = {
@@ -89,13 +90,12 @@ export default {
     })
 
     function onSubmit (): void {
-      const emailL = loginFormState.email
-      const pass = loginFormState.password
+      // const email = loginFormState.email
+      // const pass = loginFormState.password
 
-      store.authorizedUser = {
-        email: emailL,
-        password: pass
-      }
+      store.setAuthorizedUser(
+        10, loginFormState.email, 'Gi'
+      )
 
       router.push({
         path: '/chats'

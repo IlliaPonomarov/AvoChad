@@ -1,49 +1,46 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="q-pa-md column col justify-end absolute-bottom">
-
-      <div>
-        <q-chat-message
-          :text="['Have you seen Quasar?']"
-          text-color="black"
-          bg-color="light-blue-12"
-        >
-          <template v-slot:name>{{ store.authorizedUser.email }}</template>
-          <template v-slot:stamp>7 minutes ago</template>
+    <q-scroll-area
+      dark
+      class="q-pa-md column col justify-end absolute-bottom"
+      style="height: 100%; width: 100%;"
+    >
+    <!-- <div class="q-pa-md column col justify-end absolute-bottom"> -->
+      <div v-for="message in store.getCurrentChat?.messages" :key="message.id">
+        <q-chat-message v-if="message.from.id === store.getAuthorizedUser.id && windowSize() > 800" :text="[message.text]" text-color="black" bg-color="light-blue-12">
+          <template v-slot:name> {{ message.from.firstName }} </template>
+          <template v-slot:stamp>{{ message.time }}</template>
           <template v-slot:avatar>
-            <img
-              class="q-message-avatar q-message-avatar--sent"
-              src="https://cdn.quasar.dev/img/avatar4.jpg"
-            >
+            <img class="q-message-avatar q-message-avatar--received"
+              :src="message.from.avatar.path">
+          </template>
+        </q-chat-message>
+
+        <q-chat-message v-else-if="message.from.id === store.getAuthorizedUser.id" :text="[message.text]" text-color="black" bg-color="light-blue-12" sent>
+          <template v-slot:name> {{ message.from.firstName }} </template>
+          <template v-slot:stamp>{{ message.time }}</template>
+          <template v-slot:avatar>
+            <img class="q-message-avatar q-message-avatar--sent"
+              :src="message.from.avatar.path">
+          </template>
+        </q-chat-message>
+
+        <q-chat-message v-else :text="[message.text]" bg-color="light-blue-11">
+          <template v-slot:name> {{ message.from.firstName }} </template>
+          <template v-slot:avatar>
+            <img class="q-message-avatar q-message-avatar--received"
+              :src="message.from.avatar.path">
           </template>
         </q-chat-message>
       </div>
-
-      <div >
-        <q-chat-message
-          bg-color="light-blue-11"
-        >
-          <template v-slot:name> {{ store.getChats[store.currentConversationIndex].title }} </template>
-          <template v-slot:avatar>
-            <img
-              class="q-message-avatar q-message-avatar--received"
-              :src="store.getChats[store.currentConversationIndex].avatar"
-            >
-          </template>
-
-          <div>
-            Already building an app with it...
-          </div>
-
-          <q-spinner-dots size="2rem" />
-        </q-chat-message>
-      </div>
-    </div>
+    <!-- </div> -->
+    </q-scroll-area>
     <q-footer class="bg-grey-10">
-      <q-input square standout color="white" v-model="text" label="write message ..."  maxlength="6000" :dense="dense">
+      <q-input square standout color="white" v-model="text" label="write message ..." maxlength="6000" :dense="dense"
+        @keyup.enter="sendMessage">
         <template v-slot:append>
           <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer" />
-          <q-btn round dense flat icon="send" />
+          <q-btn round dense flat icon="send" @click="sendMessage" />
         </template>
       </q-input>
     </q-footer>
@@ -51,27 +48,31 @@
 </template>
 
 <script lang="ts">
-import useMainStore from "src/store/chatStore"
-import { ref, triggerRef, watch } from "vue"
+import { useChatStore } from '../store/baseStore'
+import { ref, defineComponent } from 'vue'
 
-export default {
-  name: "MainPage",
-  setup () {
-    const store = useMainStore()
-    const currentConversation = ref(store.chats[store.currentConversationIndex])
-    return {
-      store,
-      currentConversation
+export default defineComponent({
+  name: 'MainPage',
+  methods: {
+    sendMessage () {
+      if (this.text === '') { return }
+      this.store.addMessageToCurrentChat(this.text)
+      this.text = ''
+    },
+    windowSize () {
+      console.log(window.innerWidth)
+      return window.innerWidth
     }
   },
 
   data () {
     return {
-      text: '',
-      dense: false
+      store: useChatStore(),
+      text: '' as string,
+      dense: false as boolean
     }
   }
-}
+})
 </script>
 
 <style scoped>
