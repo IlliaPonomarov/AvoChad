@@ -151,6 +151,9 @@ export const useChatStore = defineStore({
         }
       } as UserInterface
     },
+    clearCurrentChat () {
+      this.getCurrentChat.messages = []
+    },
     logout () {
       this.authorizedUser = null
     }

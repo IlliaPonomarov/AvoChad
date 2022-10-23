@@ -19,23 +19,8 @@
             <q-btn round flat icon="more_horiz">
               <q-menu  auto-close :offset="[110, 8]">
                 <q-list style="min-width: 150px">
-                  <q-item clickable>
-                    <q-item-section>Contact data</q-item-section>
-                  </q-item>
-                  <q-item clickable>
-                    <q-item-section>Block</q-item-section>
-                  </q-item>
-                  <q-item clickable>
-                    <q-item-section>Select messages</q-item-section>
-                  </q-item>
-                  <q-item clickable>
-                    <q-item-section>Silence</q-item-section>
-                  </q-item>
-                  <q-item clickable>
+                  <q-item clickable @click="store.clearCurrentChat()">
                     <q-item-section>Clear messages</q-item-section>
-                  </q-item>
-                  <q-item clickable>
-                    <q-item-section>Erase messages</q-item-section>
                   </q-item>
                 </q-list>
               </q-menu>

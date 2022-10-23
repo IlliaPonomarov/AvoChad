@@ -35,9 +35,16 @@
       </div>
     <!-- </div> -->
     </q-scroll-area>
-    <q-footer class="bg-grey-10">
+      <!-- <q-list dense bordered padding class="rounded-borders">
+        <q-item v-for="(command, index) in commands" :key="index" clickable v-ripple>
+          <q-item-section>
+            {{ command }}
+          </q-item-section>
+        </q-item>
+      </q-list> -->
+      <q-footer class="bg-grey-10">
       <q-input square standout color="white" v-model="text" label="write message ..." maxlength="6000" :dense="dense"
-        @keyup.enter="sendMessage">
+        @keyup.enter="sendMessage" @onEdit="getChatCommands()">
         <template v-slot:append>
           <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer" />
           <q-btn round dense flat icon="send" @click="sendMessage" />
@@ -50,23 +57,38 @@
 <script lang="ts">
 import { useChatStore } from '../store/baseStore'
 import { ref, defineComponent } from 'vue'
+import { StringDecoder } from 'string_decoder'
 
 export default defineComponent({
   name: 'MainPage',
   methods: {
     sendMessage () {
       if (this.text === '') { return }
+      if (this.detectChatCommand()) { return }
       this.store.addMessageToCurrentChat(this.text)
       this.text = ''
     },
     windowSize () {
       console.log(window.innerWidth)
       return window.innerWidth
+    },
+    detectChatCommand () : boolean {
+      if (this.text === '/clear') {
+        this.store.clearCurrentChat()
+        this.text = ''
+        return true
+      }
+
+      return false
+    },
+    getChatCommands () : void {
+      this.commands = ['/clear'].filter(command => command.startsWith(this.text))
     }
   },
 
   data () {
     return {
+      commands: [] as string[],
       store: useChatStore(),
       text: '' as string,
       dense: false as boolean
