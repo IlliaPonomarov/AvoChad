@@ -23,11 +23,11 @@
         <q-chat-message
           bg-color="light-blue-11"
         >
-          <template v-slot:name> {{ currentConversation.title }} </template>
+          <template v-slot:name> {{ store.getChats[store.currentConversationIndex].title }} </template>
           <template v-slot:avatar>
             <img
               class="q-message-avatar q-message-avatar--received"
-              :src="currentConversation.avatar"
+              :src="store.getChats[store.currentConversationIndex].avatar"
             >
           </template>
 
@@ -52,13 +52,13 @@
 
 <script lang="ts">
 import useMainStore from "src/store/chatStore"
+import { ref, triggerRef, watch } from "vue"
 
 export default {
   name: "MainPage",
   setup () {
     const store = useMainStore()
-    const currentConversation = store.chats[store.currentConversationIndex]
-
+    const currentConversation = ref(store.chats[store.currentConversationIndex])
     return {
       store,
       currentConversation
