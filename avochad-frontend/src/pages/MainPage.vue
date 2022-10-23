@@ -35,21 +35,23 @@
       </div>
     <!-- </div> -->
     </q-scroll-area>
-      <!-- <q-list dense bordered padding class="rounded-borders">
-        <q-item v-for="(command, index) in commands" :key="index" clickable v-ripple>
-          <q-item-section>
-            {{ command }}
-          </q-item-section>
-        </q-item>
-      </q-list> -->
-      <q-footer class="bg-grey-10">
-      <q-input square standout color="white" v-model="text" label="write message ..." maxlength="6000" :dense="dense"
-        @keyup.enter="sendMessage" @onEdit="getChatCommands()">
-        <template v-slot:append>
-          <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer" />
-          <q-btn round dense flat icon="send" @click="sendMessage" />
-        </template>
-      </q-input>
+      <q-footer class="q-pa-md bg-grey-10 text-white">
+        <q-list v-if="recommendedCommands.length > 0" dense bordered padding class="rounded-borders">
+          <q-item v-for="(command, index) in recommendedCommands" :key="index" clickable v-ripple>
+            <q-item-section @click="text = command">
+              {{ command }}
+            </q-item-section>
+          </q-item>
+        </q-list>
+        <q-input dark color="white" v-model="text" maxlength="6000" :dense="dense"
+          ref="messageInput"
+          @keyup.enter="sendMessage" @keydown="processInputFill"
+          @update:model-value="() => getRecommendedCommands()">
+          <template v-slot:append>
+            <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer" />
+            <q-btn round dense flat icon="send" @click="sendMessage" />
+          </template>
+        </q-input>
     </q-footer>
   </q-page>
 </template>
@@ -64,31 +66,60 @@ export default defineComponent({
   methods: {
     sendMessage () {
       if (this.text === '') { return }
-      if (this.detectChatCommand()) { return }
-      this.store.addMessageToCurrentChat(this.text)
+      if (!this.detectChatCommand()) { this.store.addMessageToCurrentChat(this.text) }
       this.text = ''
+      this.recommendedCommands = []
     },
     windowSize () {
       console.log(window.innerWidth)
       return window.innerWidth
     },
     detectChatCommand () : boolean {
-      if (this.text === '/clear') {
-        this.store.clearCurrentChat()
-        this.text = ''
-        return true
+      for (let i = 0; i < this.commands.length; i++) {
+        if (this.text === this.commands[i][0]) {
+          this.commands[i][1](this.store)
+          return true
+        }
       }
-
       return false
     },
-    getChatCommands () : void {
-      this.commands = ['/clear'].filter(command => command.startsWith(this.text))
+    completeCommand () {
+      if (this.recommendedCommands.length === 0) { return }
+      for (let i = 0; i < this.recommendedCommands.length; i++) {
+        console.log(this.recommendedCommands[i], this.text, this.recommendedCommands[i] === this.text)
+        if (this.recommendedCommands[i] === this.text) { continue }
+        this.text = this.recommendedCommands[i]
+        return
+      }
+      // for (const command in this.recommendedCommands) {
+      //   if (this.text === this.recommendedCommands[command]) { continue }
+      //   this.text = this.recommendedCommands[command]
+      // }
+    },
+    processInputFill (e: KeyboardEvent) {
+      if (e.keyCode === 9) { this.completeCommand() }
+    },
+    getRecommendedCommands () {
+      if (this.text === '') {
+        this.recommendedCommands = []
+        return
+      }
+      this.recommendedCommands = this.commands.map(command => command[0]).filter(command => command.startsWith(this.text))
     }
   },
-
   data () {
     return {
-      commands: [] as string[],
+      commands: [
+        [
+          '/clear',
+          (store: any) => store.clearCurrentChat()
+        ],
+        [
+          '/new_chat',
+          (store: any) => this.$router.push('/create/chat')
+        ]
+      ] as Array<[string, (store: any) => void]>,
+      recommendedCommands: [] as string[],
       store: useChatStore(),
       text: '' as string,
       dense: false as boolean
