@@ -63,6 +63,13 @@ export default {
       store,
       currentConversation
     }
+  },
+
+  data () {
+    return {
+      text: '',
+      dense: false
+    }
   }
 }
 </script>

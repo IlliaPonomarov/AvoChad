@@ -179,7 +179,7 @@ export default {
     }
 
     function filteredUserList () {
-      return store.getChats.filter((chat) => chat.title.toLowerCase().includes(search.value.toLowerCase()))
+      return store.getChats.filter((chat: any) => chat.title.toLowerCase().includes(search.value.toLowerCase()))
     }
 
     return {
