@@ -112,6 +112,10 @@ export default defineComponent({
         [
           '/new_chat',
           (store: any) => this.$router.push('/create/chat')
+        ],
+        [
+          '/list',
+          (store: any) => store.setChatInfo(true)
         ]
       ] as Array<[string, (store: any) => void]>,
       recommendedCommands: [] as string[],

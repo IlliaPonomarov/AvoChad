@@ -9,12 +9,12 @@
 
             <q-btn round flat>
               <q-avatar>
-                <img :src="store.getCurrentChat.avatar.path" @click="fullHeight = true">
+                <img :src="store.getCurrentChat.avatar.path" @click="store.setChatInfo(true)">
               </q-avatar>
             </q-btn>
 
             <q-dialog
-              v-model="fullHeight"
+              v-model="store.getChatInfo"
             >
               <q-card class="column" style="width: 500px">
                 <q-card-section>
@@ -45,17 +45,18 @@
                       <q-item-section>
                         <q-item-label> {{ user.firstName }} {{ user.lastName }} </q-item-label>
                       </q-item-section>
+
                   </q-item>
 
                 </q-list>
 
                 <q-card-actions align="right" class="text-teal">
-                  <q-btn flat label="OK" v-close-popup />
+                  <q-btn flat label="OK" v-close-popup @click="store.setChatInfo(false)" />
                 </q-card-actions>
               </q-card>
             </q-dialog>
 
-            <q-toolbar-title @click="fullHeight = true">
+            <q-toolbar-title @click="store.setChatInfo(true)">
               {{ store.getCurrentChat?.name }}
             </q-toolbar-title>
             <q-btn round flat icon="more_horiz">
@@ -185,11 +186,6 @@ export default {
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
-    }
-  },
-  data () {
-    return {
-      fullHeight: false
     }
   }
 }

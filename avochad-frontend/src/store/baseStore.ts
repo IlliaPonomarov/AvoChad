@@ -111,7 +111,8 @@ export const useChatStore = defineStore({
     chats: new TempStore().chats,
     users: new TempStore().users,
     currentChat: null as ChatInterface | null,
-    authorizedUser: null as UserInterface | null
+    authorizedUser: null as UserInterface | null,
+    chatInfo: false as boolean
   }),
   getters: {
     getChats: (state) => {
@@ -125,6 +126,9 @@ export const useChatStore = defineStore({
     },
     getUsers: (state) => {
       return state.users
+    },
+    getChatInfo: (state) => {
+      return state.chatInfo
     }
   },
   actions: {
@@ -152,6 +156,9 @@ export const useChatStore = defineStore({
           path: 'https://randomuser.me/api/portraits/men/11.jpg'
         }
       } as UserInterface
+    },
+    setChatInfo (value: boolean) {
+      this.chatInfo = value
     },
     clearCurrentChat () {
       this.getCurrentChat.messages = []
