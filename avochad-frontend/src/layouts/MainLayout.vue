@@ -9,11 +9,53 @@
 
             <q-btn round flat>
               <q-avatar>
-                <img :src="store.getCurrentChat?.avatar.path">
+                <img :src="store.getCurrentChat.avatar.path" @click="fullHeight = true">
               </q-avatar>
             </q-btn>
 
-            <q-toolbar-title>
+            <q-dialog
+              v-model="fullHeight"
+            >
+              <q-card class="column" style="width: 500px">
+                <q-card-section>
+                  <div class="row justify-center text-h4">Chat Info</div>
+                </q-card-section>
+
+                <q-card-section class="col q-pt-none">
+                  <q-toolbar-title class="text-h7">
+                    <q-avatar>
+                      <img :src="store.getCurrentChat.avatar.path">
+                    </q-avatar>
+                    {{ store.getCurrentChat?.name }}
+                  </q-toolbar-title>
+                </q-card-section>
+
+                <q-card-section class="col q-pt-none">
+                  {{ store.getCurrentChat.description }}
+                </q-card-section>
+
+                <q-list padding>
+                  <q-item v-for="user in store.getCurrentChat.users" :key="user.id" clickable v-ripple>
+                      <q-item-section avatar>
+                        <q-avatar>
+                          <img :src="user.avatar.path">
+                        </q-avatar>
+                      </q-item-section>
+
+                      <q-item-section>
+                        <q-item-label> {{ user.firstName }} {{ user.lastName }} </q-item-label>
+                      </q-item-section>
+                  </q-item>
+
+                </q-list>
+
+                <q-card-actions align="right" class="text-teal">
+                  <q-btn flat label="OK" v-close-popup />
+                </q-card-actions>
+              </q-card>
+            </q-dialog>
+
+            <q-toolbar-title @click="fullHeight = true">
               {{ store.getCurrentChat?.name }}
             </q-toolbar-title>
             <q-btn round flat icon="more_horiz">
@@ -143,6 +185,11 @@ export default {
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
+    }
+  },
+  data () {
+    return {
+      fullHeight: false
     }
   }
 }

@@ -69,7 +69,8 @@ class TempStore {
           from: this.users[2]
         }
       ],
-      users: this.users
+      users: this.users,
+      description: 'Test Chat 1 Description'
     },
     {
       id: 2,
@@ -98,7 +99,8 @@ class TempStore {
           from: this.users[2]
         }
       ],
-      users: this.users
+      users: this.users,
+      description: 'Test Chat 2 Description'
     }
   ]
 }

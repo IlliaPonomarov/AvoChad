@@ -44,7 +44,6 @@
           </q-item>
         </q-list>
         <q-input dark color="white" v-model="text" maxlength="6000" :dense="dense"
-          ref="messageInput"
           @keyup.enter="sendMessage" @keydown="processInputFill"
           @update:model-value="() => getRecommendedCommands()">
           <template v-slot:append>
@@ -60,6 +59,7 @@
 import { useChatStore } from '../store/baseStore'
 import { ref, defineComponent } from 'vue'
 import { StringDecoder } from 'string_decoder'
+import { ProxyTarget } from 'http-proxy'
 
 export default defineComponent({
   name: 'MainPage',
@@ -86,15 +86,10 @@ export default defineComponent({
     completeCommand () {
       if (this.recommendedCommands.length === 0) { return }
       for (let i = 0; i < this.recommendedCommands.length; i++) {
-        console.log(this.recommendedCommands[i], this.text, this.recommendedCommands[i] === this.text)
         if (this.recommendedCommands[i] === this.text) { continue }
         this.text = this.recommendedCommands[i]
         return
       }
-      // for (const command in this.recommendedCommands) {
-      //   if (this.text === this.recommendedCommands[command]) { continue }
-      //   this.text = this.recommendedCommands[command]
-      // }
     },
     processInputFill (e: KeyboardEvent) {
       if (e.keyCode === 9) { this.completeCommand() }

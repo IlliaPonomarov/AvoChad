@@ -24,4 +24,5 @@ export interface ChatInterface {
   avatar: AvatarInterface
   messages: MessageInterface[]
   users: UserInterface[]
+  description: string
 }
