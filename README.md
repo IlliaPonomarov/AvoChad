@@ -1,3 +1,3 @@
 # AvoChad
 
-![OneBillion](./res/one_billion_project.jpg)
+![avochad-db-model](./res/avochad-db-model.PNG)
