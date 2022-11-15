@@ -1,18 +1,19 @@
 package com.example.avochadbackend.models;
 
-import com.example.avochadbackend.models.enums.LanguageCode;
-import com.example.avochadbackend.models.enums.Status;
+import com.example.avochadbackend.utility.enums.LanguageCode;
+import com.example.avochadbackend.utility.enums.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Objects;
-
+import java.util.List;
 @Entity
 @Table(name = "person")
 public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -59,8 +60,23 @@ public class Person {
     private Status status;
 
     // add list of chats ( many to many )
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "person_chat",
+    joinColumns = @JoinColumn(name = "person_id"),
+    inverseJoinColumns = @JoinColumn(name = "chat_id"))
+    private List<Chat> chats;
+
     // add list of channels ( many to many )
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "channel_person",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "channel_id")
+    )
+    private List<Channel> channels;
     // add list of messages ( many to one )
+
+    // ????
+
 
     public Person() {}
 
