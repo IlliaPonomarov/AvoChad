@@ -1,5 +1,7 @@
 package com.example.avochadbackend.models;
 
+import com.example.avochadbackend.utility.enums.MessageType;
+
 import javax.persistence.*;
 
 @Entity

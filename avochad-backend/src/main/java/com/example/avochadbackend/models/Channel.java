@@ -22,16 +22,18 @@ public class Channel {
     @Size(min = 1, max = 1000, message = "Description should be greater then 1 and less then 1000 ")
     private String description;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "channel_person",
     joinColumns = @JoinColumn(name = "channel_id"),
-    inverseJoinColumns = @JoinColumn(name =  "person_id"))
+    inverseJoinColumns = @JoinColumn(name = "person_id"))
     private List<Person> persons;
+
+    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
+    private List<Chat> chats;
 
     public Channel() {
 
     }
-
 
     public Long getId() {
         return id;

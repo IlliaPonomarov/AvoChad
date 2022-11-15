@@ -1,5 +1,6 @@
 package com.example.avochadbackend.models;
 import com.example.avochadbackend.utility.enums.ChatType;
+import com.example.avochadbackend.models.Person;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -41,6 +42,11 @@ public class Chat {
    private ChatType chatType;
 
     // CHANNELS - ONE TO MANY
+    @ManyToOne
+    @JoinColumn(name = "channel_id")
+    private Channel channel;
+
+
     // PERSONS, CHATS - MANY TO MANY
     @ManyToMany
     @JoinTable(name = "person_chat",
