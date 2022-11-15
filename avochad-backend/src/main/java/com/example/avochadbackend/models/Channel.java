@@ -70,7 +70,7 @@ public class Channel {
         if (this == o) return true;
         if (!(o instanceof Channel)) return false;
         Channel channel = (Channel) o;
-        return Objects.equals(id, channel.id) && Objects.equals(title, channel.title) && Objects.equals(description, channel.description) && Objects.equals(persons, channel.persons);
+        return this.id.equals(channel.id) && this.title.equals(channel.title) && Objects.equals(description, channel.description) && this.persons.equals(channel.persons);
     }
 
     @Override
