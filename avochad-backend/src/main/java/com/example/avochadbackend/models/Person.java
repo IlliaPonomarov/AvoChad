@@ -16,7 +16,7 @@ public class Person {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "avatar_file_id")
     private File avatarFileId;
 
@@ -40,8 +40,9 @@ public class Person {
     private String email;
 
     @Column(name = "age")
-    @Size(min = 1, max = 120, message = "Age should be greater then 1 and less then 120")
-    private int age;
+    @Max(value = 120, message = "Age should be less then 120")
+    @Min(value = 0, message = "age should be large then 0")
+    private Integer age;
 
     @Column(name = "password")
     @NotBlank
@@ -56,7 +57,6 @@ public class Person {
     @Column(name="status")
     @Enumerated(EnumType.ORDINAL)
     @NotNull
-    @PositiveOrZero
     private Status status;
 
     // add list of chats ( many to many )

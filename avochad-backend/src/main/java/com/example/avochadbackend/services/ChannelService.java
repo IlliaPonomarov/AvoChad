@@ -30,8 +30,8 @@ public class ChannelService {
         return this.channelRepository.findById(id);
     }
 
-    public Optional<Channel> findByName(String name) {
-        return this.channelRepository.findByName(name);
+    public Optional<Channel> findByTitle(String title) {
+        return this.channelRepository.findByTitle(title);
     }
     @Transactional
     public void save(Optional<Channel> channel) {

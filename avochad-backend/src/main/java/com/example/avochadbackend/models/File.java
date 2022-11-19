@@ -10,7 +10,7 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(optional = false, mappedBy = "avatarFileId")
     private Person personAvatar;
 
     public File() {}

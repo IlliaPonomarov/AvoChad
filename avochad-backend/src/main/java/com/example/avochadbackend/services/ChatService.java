@@ -2,6 +2,7 @@ package com.example.avochadbackend.services;
 
 import com.example.avochadbackend.models.Chat;
 import com.example.avochadbackend.repo.ChatRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -13,7 +14,7 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
 
-
+    @Autowired
     public ChatService(ChatRepository chatRepository) {
         this.chatRepository = chatRepository;
     }
