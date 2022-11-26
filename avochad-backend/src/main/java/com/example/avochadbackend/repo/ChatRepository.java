@@ -1,9 +1,9 @@
 package com.example.avochadbackend.repo;
 
-import com.example.avochadbackend.models.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ChatRepository extends JpaRepository<Chat, Long> {
+import com.example.avochadbackend.models.Chat;
+
+public interface ChatRepository extends JpaRepository<Chat, java.lang.Long> {
+    Chat findByTitle(java.lang.String title);
 }

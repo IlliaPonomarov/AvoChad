@@ -3,6 +3,7 @@ package com.example.avochadbackend.models;
 import com.example.avochadbackend.utility.enums.MessageType;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "message_type")
+    @Column(name = "type")
     @NotNull
     private MessageType messageType;
 
@@ -41,6 +42,10 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id")
     private Chat chat;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id")
+    private File file;
 
     public Message() {}
 
