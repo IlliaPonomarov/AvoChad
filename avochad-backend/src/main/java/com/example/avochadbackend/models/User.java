@@ -54,6 +54,16 @@ public class User {
     @NotNull(message = "Status is mandatory")
     private Status status;
 
+    public User() {}
+
+    public User(String firstName, String lastName, String email, String username, String password, Status status) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.status = status;
+    }
 
     public Long getId() {
         return id;

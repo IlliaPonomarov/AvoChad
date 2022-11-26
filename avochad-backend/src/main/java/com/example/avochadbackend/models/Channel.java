@@ -3,6 +3,7 @@ package com.example.avochadbackend.models;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -15,68 +16,103 @@ public class Channel {
     private Long id;
 
     @Column(name = "title")
-    @Size(min = 5, max = 120, message = "Title should be greater then 5 and less then 120 ")
+    @Size(min = 2, max = 254, message = "Title must be between 2 and 254 characters")
     private String title;
 
-    @Column(name = "description")
-    @Size(min = 1, max = 1000, message = "Description should be greater then 1 and less then 1000 ")
-    private String description;
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "channel_person",
-    joinColumns = @JoinColumn(name = "channel_id"),
-    inverseJoinColumns = @JoinColumn(name = "person_id"))
-    private List<Person> persons;
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
-    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
-    private List<Chat> chats;
+    @Column(name = "chat")
+    @OneToOne(mappedBy = "channel", cascade = CascadeType.ALL)
+    private Chat chat;
 
-    public Channel() {
+    @Column(name = "organization_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
 
-    }
+
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public List<Person> getPersons() {
-        return persons;
+    public Chat getChat() {
+        return chat;
     }
 
-    public void setPersons(List<Person> persons) {
-        this.persons = persons;
+    public void setChat(Chat chat) {
+        this.chat = chat;
     }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Channel)) return false;
+        if (o == null || !(o instanceof Channel)) return false;
         Channel channel = (Channel) o;
-        return this.id.equals(channel.id) && this.title.equals(channel.title) && Objects.equals(description, channel.description) && this.persons.equals(channel.persons);
+
+        return id.equals(channel.id) &&
+                title.equals(channel.title) &&
+                createdAt.equals(channel.createdAt) &&
+                updatedAt.equals(channel.updatedAt) &&
+                chat.equals(channel.chat) &&
+                organization.equals(channel.organization);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, persons);
+        return Objects.hash(id, title, createdAt, updatedAt);
+    }
+
+    @Override
+    public String toString() {
+        return "Channel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }
