@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +24,16 @@ public class PersonService {
         return this.personRepository.findAll();
     }
 
-    public Optional<Person> findById(Long id) {
+    public Optional<Person> findById(long id) {
         return this.personRepository.findById(id);
+    }
+
+    public Optional<Person> findByEmail(String email) {
+        return this.personRepository.findByEmail(email);
+    }
+
+    public Optional<Person> findByUsername(String username) {
+        return this.personRepository.findByUsername(username);
     }
 
     @Transactional

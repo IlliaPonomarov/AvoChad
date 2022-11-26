@@ -3,12 +3,15 @@ type Query {
     findAllPersons: [Person]
 }
 
+
+
 type Person {
     id: ID
     firstName: String,
     secondName: String,
     username: String,
     email: String,
+    password: String,
     languageCode: Int,
     avatar_file_id: Int,
     status: Int,

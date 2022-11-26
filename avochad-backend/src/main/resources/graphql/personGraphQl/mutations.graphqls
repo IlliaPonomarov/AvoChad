@@ -1,0 +1,5 @@
+
+
+type Mutation {
+    addPerson(input: CreatePerson) : String
+}
