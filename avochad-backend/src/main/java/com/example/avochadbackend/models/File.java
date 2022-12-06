@@ -3,6 +3,8 @@ package com.example.avochadbackend.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name="file")
 public class File {
@@ -11,7 +13,8 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false, mappedBy = "message")
+    @OneToOne(optional = false, mappedBy = "file")
+    @JsonBackReference
     private Message message;
 
     @Column(name = "hash")

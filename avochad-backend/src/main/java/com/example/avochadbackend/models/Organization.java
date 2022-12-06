@@ -13,6 +13,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.List;
 
 @Entity
@@ -42,6 +45,7 @@ public class Organization {
 
 
     @OneToMany(mappedBy = "organization", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Channel> channels;
 
     public Organization() {}

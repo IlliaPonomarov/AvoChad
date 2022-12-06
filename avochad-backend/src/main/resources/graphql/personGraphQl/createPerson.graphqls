@@ -1,7 +1,0 @@
-input CreatePerson {
-    firstName: String!,
-    secondName: String!,
-    username: String!,
-    email: String!,
-    password: String!,
-}

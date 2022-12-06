@@ -1,13 +1,16 @@
 package com.example.avochadbackend.models;
+import com.example.avochadbackend.utility.enums.Role;
 import com.example.avochadbackend.utility.enums.Status;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.Objects;
+import java.util.List;
 
-@Entity
-@Table(name = "User")
+@Entity(name = "User")
+@Table(name = "\"User\"", schema = "public")
 public class User {
 
     @Id
@@ -36,10 +39,28 @@ public class User {
     @Size(min = 2, max = 254, message = "Username must be between 2 and 254 characters")
     private String username;
 
+    @NotNull
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "role")
+    private Role role;
+
     @Column(name = "password")
     @NotBlank(message = "Password is mandatory")
     @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
     private String password;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "chat_user",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "chat_id")
+    )
+    private List<Chat> chats;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Message> messages;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -56,13 +77,14 @@ public class User {
 
     public User() {}
 
-    public User(String firstName, String lastName, String email, String username, String password, Status status) {
+    public User(String firstName, String lastName, String email, String username, String password, Status status, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.username = username;
         this.password = password;
         this.status = status;
+        this.role = role;
     }
 
     public Long getId() {
@@ -131,7 +153,16 @@ public class User {
     }
 
     public void setStatus(Status status) {
+        
         this.status = status;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override

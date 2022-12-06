@@ -1,11 +1,11 @@
 package com.example.avochadbackend.controllers;
 
-import com.example.avochadbackend.models.Person;
+import com.example.avochadbackend.models.User;
 import com.example.avochadbackend.mutations.inputs.CreatePerson;
-import com.example.avochadbackend.services.PersonService;
+import com.example.avochadbackend.services.UserService;
 import com.example.avochadbackend.utility.exceptions.PersonAlreadyExistException;
 import com.example.avochadbackend.utility.exceptions.PersonNotCreatedException;
-import com.example.avochadbackend.utility.validators.PersonValidator;
+import com.example.avochadbackend.utility.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -19,24 +19,25 @@ import java.util.List;
 
 
 @Controller
-public class PersonController {
+public class UserController {
 
-    private final PersonService personService;
-    private final PersonValidator personValidator;
+    private final UserService personService;
+    private final UserValidator personValidator;
 
     @Autowired
-    public PersonController(PersonService personService, PersonValidator personValidator) {
+    public UserController(UserService personService, UserValidator personValidator) {
         this.personService = personService;
         this.personValidator = personValidator;
     }
 
     @QueryMapping
-    public List<Person> findAllPersons() {
+    public List<User> findAllPersons() {
         return this.personService.findAll();
     }
+    
     @QueryMapping
-    public Person getPersonById(@Argument Long id){
-        Optional<Person> person = this.personService.findById(id);
+    public User getPersonById(@Argument Long id){
+        Optional<User> person = this.personService.findById(id);
 
         if (person.isEmpty())
             throw new PersonAlreadyExistException("Person not found", "invalidField");

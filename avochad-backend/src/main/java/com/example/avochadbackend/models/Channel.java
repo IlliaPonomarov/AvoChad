@@ -2,6 +2,9 @@ package com.example.avochadbackend.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.util.List;
 import java.util.Date;
 import java.util.Objects;
@@ -27,13 +30,14 @@ public class Channel {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    @Column(name = "chat")
     @OneToOne(mappedBy = "channel", cascade = CascadeType.ALL)
+    @JoinColumn(name = "chat_id")
+    @JsonBackReference
     private Chat chat;
 
-    @Column(name = "organization_id")
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "organization_id")
+    @JsonBackReference
     private Organization organization;
 
 

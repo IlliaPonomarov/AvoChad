@@ -4,8 +4,12 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import com.example.avochadbackend.utility.enums.ChatType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.Date;
 import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Table(name = "chat")
@@ -25,6 +29,15 @@ public class Chat {
     @Enumerated(EnumType.ORDINAL)
     private ChatType type;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "chat_user",
+        joinColumns = @JoinColumn(name = "chat_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @JsonManagedReference
+    private List<User> users;
+
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -33,23 +46,17 @@ public class Chat {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    @Column(name = "last_message")
-    @OneToOne(mappedBy = "chat", cascade = CascadeType.ALL)
-    private String lastMessage;
-
-    @Column(name = "channel")
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "channel_id")
+    @JsonBackReference
     private Channel channel;
 
     public Chat() {}
 
-    public Chat(String title, ChatType type, Date createdAt, Date updatedAt, String lastMessage, Channel channel) {
+    public Chat(String title, ChatType type, Date createdAt, Date updatedAt, Channel channel) {
         this.title = title;
         this.type = type;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.lastMessage = lastMessage;
         this.channel = channel;
     }
     
@@ -73,10 +80,6 @@ public class Chat {
         return updatedAt;
     }
 
-    public String getLastMessage() {
-        return lastMessage;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -93,21 +96,17 @@ public class Chat {
         this.updatedAt = updatedAt;
     }
 
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || !(o instanceof Chat)) return false;
         Chat chat = (Chat) o;
-        return Objects.equals(id, chat.id) && Objects.equals(title, chat.title) && type == chat.type && Objects.equals(createdAt, chat.createdAt) && Objects.equals(updatedAt, chat.updatedAt) && Objects.equals(lastMessage, chat.lastMessage);
+        return Objects.equals(id, chat.id) && Objects.equals(title, chat.title) && type == chat.type && Objects.equals(createdAt, chat.createdAt) && Objects.equals(updatedAt, chat.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, type, createdAt, updatedAt, lastMessage);
+        return Objects.hash(id, title, type, createdAt, updatedAt);
     }
 
     @Override
@@ -118,7 +117,6 @@ public class Chat {
                 ", type=" + type +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", lastMessage='" + lastMessage + '\'' +
                 '}';
     }
 

@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.avochadbackend.models.Message;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    Message findByTitle(String title);    
+    Message findByText(String text);
 }

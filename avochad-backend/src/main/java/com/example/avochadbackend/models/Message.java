@@ -1,6 +1,7 @@
 package com.example.avochadbackend.models;
 
 import com.example.avochadbackend.utility.enums.MessageType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -37,14 +38,17 @@ public class Message {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id")
+    @JsonBackReference
     private Chat chat;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "file_id")
+    @JsonBackReference
     private File file;
 
     public Message() {}

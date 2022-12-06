@@ -1,19 +1,19 @@
 package com.example.avochadbackend.utility.validators;
 
-import com.example.avochadbackend.models.Person;
-import com.example.avochadbackend.services.PersonService;
+import com.example.avochadbackend.models.User;
+import com.example.avochadbackend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 @Component
-public class PersonValidator  implements Validator {
+public class UserValidator  implements Validator {
 
-    private PersonService personService;
+    private UserService personService;
 
     @Autowired
-    public PersonValidator(PersonService personService) {
+    public UserValidator(UserService personService) {
         this.personService = personService;
     }
 
@@ -23,13 +23,13 @@ public class PersonValidator  implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return Person.class.equals(clazz);
+        return User.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
 
-        Person person = (Person) target;
+        User person = (User) target;
 
         if (this.personService.findByEmail(person.getEmail()).isPresent())
             errors.rejectValue("email", "Person with this email already exist.");
