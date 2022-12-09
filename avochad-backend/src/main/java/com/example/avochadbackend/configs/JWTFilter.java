@@ -20,11 +20,11 @@ import com.example.avochadbackend.services.UserDetailService;
 @Component
 public class JWTFilter extends OncePerRequestFilter{
 
-    private final com.example.avochadbackend.security.JWTUtil jwtUtil;
-    private final com.example.avochadbackend.services.UserDetailService userDetailService;
+    private final JWTUtil jwtUtil;
+    private final UserDetailService userDetailService;
 
     @Autowired
-    public JWTFilter(com.example.avochadbackend.security.JWTUtil jwtUtil, com.example.avochadbackend.services.UserDetailService userDetailService) {
+    public JWTFilter(JWTUtil jwtUtil, UserDetailService userDetailService) {
         this.jwtUtil = jwtUtil;
         this.userDetailService = userDetailService;
     }
@@ -63,6 +63,7 @@ public class JWTFilter extends OncePerRequestFilter{
                 } else
                      System.out.println("No token found");
                 filterChain.doFilter(request, response);
+                return;
     }
 
 

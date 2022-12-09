@@ -1,15 +1,15 @@
 package com.example.avochadbackend.dto;
 
-public class UserLoginDTO {
+public class AuthenticationDTO {
 
     private String username;
     private String password;
     private String email;
 
-    public UserLoginDTO() {
+    public AuthenticationDTO() {
     }
 
-    public UserLoginDTO(String username, String password, String email) {
+    public AuthenticationDTO(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;

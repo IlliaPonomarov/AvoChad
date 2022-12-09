@@ -36,7 +36,5 @@ public class UserValidator  implements Validator {
 
         if (this.personService.findByUsername(person.getUsername()).isPresent())
             errors.rejectValue("username", "Person with this username already exist.");
-
-
     }
 }

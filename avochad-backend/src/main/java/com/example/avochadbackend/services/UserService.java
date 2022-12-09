@@ -1,8 +1,10 @@
 package com.example.avochadbackend.services;
 
+import com.example.avochadbackend.dto.UserRegistrationDTO;
 import com.example.avochadbackend.models.User;
 import com.example.avochadbackend.repo.UserRepository;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +15,12 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     public List<User> findAll() {
@@ -34,7 +38,7 @@ public class UserService {
 
     public Optional<User> findByUsername(String username) {
         return this.userRepository.findByUsername(username);
-    }
+    }j
 
     @Transactional
     public void save(User user) {
@@ -42,4 +46,7 @@ public class UserService {
     }
 
 
+    public User convertToPerson(UserRegistrationDTO registrationDTO) {
+        return modelMapper.map(registrationDTO, User.class);
+    }
 }

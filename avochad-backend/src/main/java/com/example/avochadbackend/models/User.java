@@ -46,7 +46,6 @@ public class User {
 
     @Column(name = "password")
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
     private String password;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -55,6 +54,7 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "chat_id")
     )
+    @JsonManagedReference
     private List<Chat> chats;
 
 
