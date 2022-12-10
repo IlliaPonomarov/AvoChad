@@ -26,7 +26,7 @@ public class JWTUtil {
         .withIssuedAt(new Date())
         .withIssuer("avochad")
         .withExpiresAt(expirationDate)
-        .sign(Algorithm.HMAC256(username + key));
+        .sign(Algorithm.HMAC256(key));
     }
 
     //  validate token

@@ -2,6 +2,7 @@ package com.example.avochadbackend.controllers;
 
 import com.example.avochadbackend.models.User;
 import com.example.avochadbackend.services.UserService;
+import com.example.avochadbackend.utility.exception.UserNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

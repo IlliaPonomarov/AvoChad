@@ -4,6 +4,7 @@ import java.lang.annotation.Retention;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.example.avochadbackend.utility.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,10 +21,10 @@ public class MyUserDetails implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (user.getRole().equals(0) )
+        if (user.getRole().equals(Role.GUEST) )
             return Collections.singleton(new SimpleGrantedAuthority("ROLE_GUEST"));
 
-        else if (user.getRole().equals(1) )
+        else if (user.getRole().equals(Role.USER) )
             return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
 
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -41,28 +42,28 @@ public class MyUserDetails implements UserDetails{
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     public User getUser() {
-        return user;
+        return this.user;
     }
 
 

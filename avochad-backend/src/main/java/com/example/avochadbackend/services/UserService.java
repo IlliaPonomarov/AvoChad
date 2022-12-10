@@ -38,7 +38,7 @@ public class UserService {
 
     public Optional<User> findByUsername(String username) {
         return this.userRepository.findByUsername(username);
-    }j
+    }
 
     @Transactional
     public void save(User user) {

@@ -53,6 +53,7 @@ public class AuthController {
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(authenticationDTO.getUsername(), authenticationDTO.getPassword());
         String jwtToken = "";
+        
         Optional<User> authUser = userService.findByUsername(authenticationDTO.getUsername());
 
         if (bindingResult.hasErrors() || authUser.isEmpty()) {
@@ -70,14 +71,16 @@ public class AuthController {
 
         try {
             authenticationManager.authenticate(authentication);
-            SecurityContextHolder.getContext().setAuthentication(authentication);    
+           // SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (BadCredentialsException exception) {
             throw new BadCredentialsException("Incorrect username or password.");
+        } finally {
+            System.out.println("T:" + SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
         }
 
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-
-        jwtToken = jwtUtil.generateToken(authenticationDTO.getUsername());
+        jwtToken = jwtUtil.generateToken(authUser.get().getUsername());
+        System.out.println("L: " + jwtToken);
+        
         return new ResponseEntity<>(jwtToken, HttpStatus.OK);
     }
 
