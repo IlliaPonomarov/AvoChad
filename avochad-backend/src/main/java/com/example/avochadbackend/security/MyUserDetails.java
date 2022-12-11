@@ -1,6 +1,4 @@
 package com.example.avochadbackend.security;
-
-import java.lang.annotation.Retention;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -21,13 +19,13 @@ public class MyUserDetails implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (user.getRole().equals(Role.GUEST) )
-            return Collections.singleton(new SimpleGrantedAuthority("ROLE_GUEST"));
+        if (this.user.getRole().equals(Role.ANONYMOUS) )
+            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            
+        else if (this.user.getRole().equals(Role.USER) )
+            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
-        else if (user.getRole().equals(Role.USER) )
-            return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
     }
 
     @Override

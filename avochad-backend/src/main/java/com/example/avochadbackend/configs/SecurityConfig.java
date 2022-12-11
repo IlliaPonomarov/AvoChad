@@ -12,18 +12,19 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.example.avochadbackend.services.UserDetailService;
+import com.example.avochadbackend.services.MyUserDetailService;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
 
-    private final UserDetailService userDetailService;
+    private final MyUserDetailService myUserDetailService;
     private final JWTFilter jwtFilter;
 
-    public SecurityConfig(UserDetailService userDetailService, JWTFilter jwtFilter) {
-        this.userDetailService = userDetailService;
+    @Autowired
+    public SecurityConfig(MyUserDetailService myUserDetailService, JWTFilter jwtFilter) {
+        this.myUserDetailService = myUserDetailService;
         this.jwtFilter = jwtFilter;
     }
 
@@ -33,9 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
         
         http.
              csrf().disable()
-            .authorizeRequests().antMatchers("/auth/**", "/error").permitAll()
+            .authorizeRequests()
             .antMatchers("/admin/**").hasRole("ADMIN")
-            .antMatchers("/user/**").hasRole("USER")
+            .antMatchers("/api/users/**").hasRole("USER")
+            .antMatchers("/auth/**", "/error").permitAll()
             .anyRequest().hasAnyRole("USER", "ADMIN")
             .and()
                 .formLogin().loginPage("/auth/login")
@@ -58,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService)
+        auth.userDetailsService(myUserDetailService)
         .passwordEncoder(getPasswordEncoder());
     }
 

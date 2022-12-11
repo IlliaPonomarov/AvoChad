@@ -21,12 +21,12 @@ public class JWTUtil {
         Date expirationDate = Date.from(ZonedDateTime.now().plusMinutes(60).toInstant());
 
         return JWT.create()
-        .withSubject(username)
-        .withClaim("username", username)
-        .withIssuedAt(new Date())
-        .withIssuer("avochad")
-        .withExpiresAt(expirationDate)
-        .sign(Algorithm.HMAC256(key));
+            .withSubject("User details")
+            .withClaim("username", username)
+            .withIssuedAt(new Date())
+            .withIssuer("avochad")
+            .withExpiresAt(expirationDate)
+            .sign(Algorithm.HMAC256(key));
     }
 
     //  validate token

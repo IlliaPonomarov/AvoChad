@@ -47,11 +47,13 @@ public class AuthController {
         this.registrationService = registrationService;
     }
     
+
+    // Login api method
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody @Valid AuthenticationDTO authenticationDTO, BindingResult bindingResult) {
-        System.out.println(authenticationDTO.toString());
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(authenticationDTO.getUsername(), authenticationDTO.getPassword());
+        
         String jwtToken = "";
         
         Optional<User> authUser = userService.findByUsername(authenticationDTO.getUsername());
@@ -75,20 +77,24 @@ public class AuthController {
         } catch (BadCredentialsException exception) {
             throw new BadCredentialsException("Incorrect username or password.");
         } finally {
-            System.out.println("T:" + SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+            System.out.println("Authentication status:" + SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
         }
 
         jwtToken = jwtUtil.generateToken(authUser.get().getUsername());
-        System.out.println("L: " + jwtToken);
+        System.out.println("Token: " + jwtToken);
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        System.out.println(authUser.get().getRole());
         
         return new ResponseEntity<>(jwtToken, HttpStatus.OK);
     }
 
+    // Registration api method
     @PostMapping("/registration")
     public ResponseEntity<String> register(@RequestBody @Valid UserRegistrationDTO registrationDTO, BindingResult bindingResult) {
         User user = userService.convertToPerson(registrationDTO);
         String token = "";
 
+        // Binding of errors from DTO
         if (bindingResult.hasErrors()) {
             StringBuilder messageErrors = new StringBuilder();
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -108,6 +114,7 @@ public class AuthController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
+    // Custom User exceptions handlers
     @ExceptionHandler(UserNotExistException.class)
     public ResponseEntity<String> handleUserNotExistException(UserNotExistException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);

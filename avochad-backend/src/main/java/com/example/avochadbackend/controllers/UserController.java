@@ -5,10 +5,10 @@ import com.example.avochadbackend.services.UserService;
 import com.example.avochadbackend.utility.exception.UserNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +21,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -29,11 +29,12 @@ public class UserController {
 
     @GetMapping("/")
     public List<User> index() {
+        System.out.println("Test user api");
         return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Optional<User> show(long id) {
+    public Optional<User> findUserById(@PathVariable long id) {
         Optional<User> user = userService.findById(id);
 
         if(user.isEmpty())
@@ -42,4 +43,12 @@ public class UserController {
 
         return userService.findById(id);
     }
+
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public String handleUserNotFoundException(UserNotFoundException ex) {
+        return ex.getMessage();
+    }
+
+
 }

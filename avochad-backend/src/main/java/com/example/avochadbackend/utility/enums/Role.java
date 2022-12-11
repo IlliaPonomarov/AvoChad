@@ -1,7 +1,7 @@
 package com.example.avochadbackend.utility.enums;
 
 public enum Role {
-    GUEST,
+    ANONYMOUS,
     USER,
     ADMIN
 }

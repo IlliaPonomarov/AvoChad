@@ -15,18 +15,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.avochadbackend.security.JWTUtil;
-import com.example.avochadbackend.services.UserDetailService;
+import com.example.avochadbackend.services.MyUserDetailService;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter{
 
     private final JWTUtil jwtUtil;
-    private final UserDetailService userDetailService;
+    private final MyUserDetailService myUserDetailService;
 
     @Autowired
-    public JWTFilter(JWTUtil jwtUtil, UserDetailService userDetailService) {
+    public JWTFilter(JWTUtil jwtUtil, MyUserDetailService myUserDetailService) {
         this.jwtUtil = jwtUtil;
-        this.userDetailService = userDetailService;
+        this.myUserDetailService = myUserDetailService;
     }
 
     @Override
@@ -36,9 +36,10 @@ public class JWTFilter extends OncePerRequestFilter{
                 String authHeader = request.getHeader("Authorization");
 
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                    System.out.println("Yes");
                     StringBuilder token = new StringBuilder(authHeader.substring(7));
-                    token.deleteCharAt(token.length() - 1);
                     String jwtToken = token.toString();
+                    System.out.println(jwtToken);
 
                     if(jwtToken.isBlank())
                         response.sendError(401, "Token is empty");
@@ -46,7 +47,7 @@ public class JWTFilter extends OncePerRequestFilter{
 
                         try{
                             String username = jwtUtil.validateToken(jwtToken);
-                            UserDetails userDetails = userDetailService.loadUserByUsername(username);
+                            UserDetails userDetails = myUserDetailService.loadUserByUsername(username);
 
                             UsernamePasswordAuthenticationToken authToken = 
                             new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());

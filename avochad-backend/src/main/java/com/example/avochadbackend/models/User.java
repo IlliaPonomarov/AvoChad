@@ -187,9 +187,9 @@ public class User {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' + 
-                ", username='" + username + '\'' 
-                + ", status='" + status + '\'';
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", role=" + role;
     }
 
 

@@ -27,7 +27,7 @@ public class RegistrationService {
     public void registerUser(User user) {
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());
-        user.setRole(Role.GUEST);
+        user.setRole(Role.USER);
         user.setStatus(Status.ONLINE);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

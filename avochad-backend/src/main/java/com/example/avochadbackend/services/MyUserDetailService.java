@@ -13,12 +13,12 @@ import com.example.avochadbackend.repo.UserRepository;
 import com.example.avochadbackend.security.MyUserDetails;
 
 @Service
-public class UserDetailService implements UserDetailsService{
+public class MyUserDetailService implements UserDetailsService{
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserDetailService(UserRepository userRepository) {
+    public MyUserDetailService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
