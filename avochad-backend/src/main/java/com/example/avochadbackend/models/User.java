@@ -1,6 +1,7 @@
 package com.example.avochadbackend.models;
 import com.example.avochadbackend.utility.enums.Role;
 import com.example.avochadbackend.utility.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -48,18 +49,19 @@ public class User {
     @NotBlank(message = "Password is mandatory")
     private String password;
 
+    // Change json response , where chats-api controller will be implemented.
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "chat_user",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "chat_id")
     )
-    @JsonManagedReference
+    @JsonIgnore
     private List<Chat> chats;
 
-
+    // Change json response , where message-api controller will be implemented.
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Message> messages;
 
     @Column(name = "created_at")

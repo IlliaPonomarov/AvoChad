@@ -45,6 +45,16 @@ public class UserService {
         this.userRepository.save(user);
     }
 
+    @Transactional
+    public void update(User user) {
+        this.userRepository.save(user);
+    }
+
+    @Transactional
+    public void delete(User user) {
+        this.userRepository.delete(user);
+    }
+
 
     public User convertToPerson(UserRegistrationDTO registrationDTO) {
         return modelMapper.map(registrationDTO, User.class);

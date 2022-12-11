@@ -73,7 +73,6 @@ public class AuthController {
 
         try {
             authenticationManager.authenticate(authentication);
-           // SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (BadCredentialsException exception) {
             throw new BadCredentialsException("Incorrect username or password.");
         } finally {
