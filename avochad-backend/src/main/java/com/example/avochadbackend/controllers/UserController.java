@@ -2,6 +2,7 @@ package com.example.avochadbackend.controllers;
 
 import com.example.avochadbackend.models.User;
 import com.example.avochadbackend.services.UserService;
+import com.example.avochadbackend.utility.exception.ErrorResponse;
 import com.example.avochadbackend.utility.exception.UserNotFoundException;
 import com.example.avochadbackend.utility.exception.UserNotUpdatedException;
 
@@ -90,13 +91,13 @@ public class UserController {
 
     @ExceptionHandler(UserNotUpdatedException.class)
     public ResponseEntity<ErrorResponse> handleUserNotUpdatedException(UserNotUpdatedException ex) {
-        return ex.getMessage();
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse(ex.getMessage(), System.currentTimeMillis()), HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler(UserNotFoundException.class)
-    public String handleUserNotFoundException(UserNotFoundException ex) {
-        return ex.getMessage();
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse(ex.getMessage(), System.currentTimeMillis()), HttpStatus.BAD_REQUEST);
     }
 
 

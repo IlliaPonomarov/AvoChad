@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import com.example.avochadbackend.dto.UserRegistrationDTO;
 import com.example.avochadbackend.models.User;
+import com.example.avochadbackend.utility.exception.ErrorResponse;
 import com.example.avochadbackend.utility.exception.UserNotCreatedException;
 import com.example.avochadbackend.utility.exception.UserNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ public class AuthController {
         
         Optional<User> authUser = userService.findByUsername(authenticationDTO.getUsername());
 
+        // Binding of errors from DTO
         if (bindingResult.hasErrors() || authUser.isEmpty()) {
             StringBuilder messageErrors = new StringBuilder();
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -71,6 +73,8 @@ public class AuthController {
             throw new UserNotExistException(messageErrors.toString());
         }
 
+
+        // Authentication of user
         try {
             authenticationManager.authenticate(authentication);
         } catch (BadCredentialsException exception) {
@@ -79,6 +83,7 @@ public class AuthController {
             System.out.println("Authentication status:" + SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
         }
 
+        // Generate token
         jwtToken = jwtUtil.generateToken(authUser.get().getUsername());
         System.out.println("Token: " + jwtToken);
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
@@ -113,15 +118,21 @@ public class AuthController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    // Custom User exceptions handlers
+    /*
+        Custom User exceptions handlers
+    */ 
+
     @ExceptionHandler(UserNotExistException.class)
-    public ResponseEntity<String> handleUserNotExistException(UserNotExistException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> handleUserNotExistException(UserNotExistException exception) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse(exception.getMessage(), System.currentTimeMillis()), HttpStatus.BAD_REQUEST);
+
     }
 
+    
     @ExceptionHandler(UserNotCreatedException.class)
-    public ResponseEntity<String> handleUserNotCreatedException(UserNotCreatedException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> handleUserNotCreatedException(UserNotCreatedException exception) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse(exception.getMessage(), System.currentTimeMillis()), HttpStatus.BAD_REQUEST);
+
     }
 
 
