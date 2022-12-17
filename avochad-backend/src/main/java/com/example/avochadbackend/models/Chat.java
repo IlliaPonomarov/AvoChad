@@ -3,7 +3,8 @@ package com.example.avochadbackend.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import com.example.avochadbackend.utility.enums.ChatType;
+
+import com.example.avochadbackend.utility.exception.enums.ChatType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 

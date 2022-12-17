@@ -1,6 +1,6 @@
 package com.example.avochadbackend.models;
 
-import com.example.avochadbackend.utility.enums.MessageType;
+import com.example.avochadbackend.utility.exception.enums.MessageType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.util.Date;
