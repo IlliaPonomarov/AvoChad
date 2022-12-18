@@ -1,4 +1,4 @@
-package com.example.avochadbackend.utility.exception;
+package com.example.avochadbackend.utility.exception.userExceptions;
 
 public class UserNotUpdatedException extends RuntimeException{
     

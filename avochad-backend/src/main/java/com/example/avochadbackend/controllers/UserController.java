@@ -3,8 +3,9 @@ package com.example.avochadbackend.controllers;
 import com.example.avochadbackend.models.User;
 import com.example.avochadbackend.services.UserService;
 import com.example.avochadbackend.utility.exception.ErrorResponse;
-import com.example.avochadbackend.utility.exception.UserNotFoundException;
-import com.example.avochadbackend.utility.exception.UserNotUpdatedException;
+import com.example.avochadbackend.utility.exception.userExceptions.UserNotCreatedException;
+import com.example.avochadbackend.utility.exception.userExceptions.UserNotFoundException;
+import com.example.avochadbackend.utility.exception.userExceptions.UserNotUpdatedException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,16 +17,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.Optional;
-
 import javax.validation.Valid;
-
 import java.util.List;
 
 
@@ -41,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public List<User> index() {
+    public List<User> findAll() {
         System.out.println("index");
         return userService.findAll();
     }
@@ -72,7 +71,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable long id, @RequestBody @Valid User user, BindingResult bindingResult) {
+    public ResponseEntity<User> update(@PathVariable long id, @RequestBody @Valid User user, BindingResult bindingResult) {
         Optional<User> userOld = userService.findById(id);
 
         if(bindingResult.hasErrors() || userOld.isEmpty()){
@@ -86,8 +85,26 @@ public class UserController {
         }
         userService.update(user);
 
-        return new ResponseEntity<>("", HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
+    @PostMapping("/")
+    public ResponseEntity<User> create(@RequestBody @Valid User user, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            StringBuilder errorMessage = new StringBuilder();
+
+            for (FieldError error : errors)
+                errorMessage.append(error.getField() + " - " + error.getDefaultMessage() + ";");
+            
+                throw new UserNotCreatedException(errorMessage.toString());
+        }
+        userService.save(user);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+
 
     @ExceptionHandler(UserNotUpdatedException.class)
     public ResponseEntity<ErrorResponse> handleUserNotUpdatedException(UserNotUpdatedException ex) {
@@ -98,7 +115,5 @@ public class UserController {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse(ex.getMessage(), System.currentTimeMillis()), HttpStatus.BAD_REQUEST);
-    }
-
-
+    } 
 }

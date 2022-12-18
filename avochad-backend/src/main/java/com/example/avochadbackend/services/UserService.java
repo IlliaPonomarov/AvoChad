@@ -55,6 +55,11 @@ public class UserService {
         this.userRepository.delete(user);
     }
 
+    @Transactional
+    public void deleteById(long id) {
+        this.userRepository.deleteById(id);
+    }
+
 
     public User convertToPerson(UserRegistrationDTO registrationDTO) {
         return modelMapper.map(registrationDTO, User.class);

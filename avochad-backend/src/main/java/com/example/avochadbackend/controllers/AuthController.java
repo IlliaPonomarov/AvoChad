@@ -5,8 +5,9 @@ import javax.validation.Valid;
 import com.example.avochadbackend.dto.UserRegistrationDTO;
 import com.example.avochadbackend.models.User;
 import com.example.avochadbackend.utility.exception.ErrorResponse;
-import com.example.avochadbackend.utility.exception.UserNotCreatedException;
-import com.example.avochadbackend.utility.exception.UserNotExistException;
+import com.example.avochadbackend.utility.exception.userExceptions.UserNotCreatedException;
+import com.example.avochadbackend.utility.exception.userExceptions.UserNotExistException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
