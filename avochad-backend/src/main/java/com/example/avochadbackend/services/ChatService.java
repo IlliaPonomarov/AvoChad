@@ -28,6 +28,10 @@ public class ChatService {
         return this.chatRepository.findById(id);
     }
 
+    public List<Chat> findByUserId(long id) {
+        return this.chatRepository.findByUsersId(id);
+    }
+
     @Transactional
     public void save(Optional<Chat> chat) {
         if (chat.isEmpty())
