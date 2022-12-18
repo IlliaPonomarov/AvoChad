@@ -100,7 +100,7 @@ public class AuthController {
     }
 
     // Registration api method
-    @PostMapping("/registration")
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid UserRegistrationDTO registrationDTO, BindingResult bindingResult) {
         User user = userService.convertToPerson(registrationDTO);
         String token = "";
