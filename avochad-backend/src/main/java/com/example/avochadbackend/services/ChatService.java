@@ -1,10 +1,15 @@
 package com.example.avochadbackend.services;
 
+import com.example.avochadbackend.dto.ChatDTO;
 import com.example.avochadbackend.models.Chat;
 import com.example.avochadbackend.repo.ChatRepository;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,10 +18,12 @@ import java.util.Optional;
 public class ChatService {
 
     private final ChatRepository chatRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public ChatService(ChatRepository chatRepository) {
+    public ChatService(ChatRepository chatRepository, ModelMapper modelMapper) {
         this.chatRepository = chatRepository;
+        this.modelMapper = modelMapper;
     }
 
 
@@ -33,20 +40,36 @@ public class ChatService {
     }
 
     @Transactional
-    public void save(Optional<Chat> chat) {
-        if (chat.isEmpty())
-            return;
+    public void save(Chat chat) {
+        chat.setCreatedAt(new Date());
+        chat.setUpdatedAt(new Date());
 
-        this.chatRepository.save(chat.get());
+        this.chatRepository.save(chat);
     }
+
     @Transactional
-    public void update(Optional<Chat> chat) {
-        if (chat.isEmpty())
-            return;
+    public void update(Chat chat, ChatDTO chatDTO) {
+        chat.setTitle(chatDTO.getTitle());
+        chat.setType(chatDTO.getType());
+        chat.setUsers(chatDTO.getUsers()); 
+        chat.setUpdatedAt(new Date());
 
-        this.chatRepository.save(chat.get());
+        this.chatRepository.save(chat);
+    }
+
+    @Transactional
+    public void delete(Chat chat) {
+        this.chatRepository.delete(chat);
+    }
+
+    @Transactional
+    public void deleteById(long id) {
+        this.chatRepository.deleteById(id);
     }
 
 
+    public Chat convertToEntity(ChatDTO chatDTO) {
+        return modelMapper.map(chatDTO, Chat.class);
+    }
 
 }

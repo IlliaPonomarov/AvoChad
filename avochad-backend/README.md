@@ -32,6 +32,24 @@ This endpoint is used to get a user by id. It is only accessible by the admin.\
 \
 `PUT /id` This endpoint is used to update a user by id. It is only accessible by the admin. 
 
+## Chat Controller
+This controller is used to manage the chats.
+
+### Endpoints
+`GET /`
+This endpoint is used to get all chats.\
+\
+`GET /id`
+This endpoint is used to get a chat by id. \
+\
+`GET /user/{id}` This endpoint is used to get all chats by user id. \
+\
+`Delete /id` This endpoint is used to delete a chat by id. \
+\
+`PUT /id` This endpoint is used to update a chat by id. \
+\
+`POST /` This endpoint is used to create a chat. \
+
 
 # Frameworks and Libraries
 - [Spring Boot](https://spring.io/projects/spring-boot)
@@ -40,7 +58,13 @@ This endpoint is used to get a user by id. It is only accessible by the admin.\
 - [Spring Web](https://spring.io/projects/spring-framework)
 - [Hibernate Validator](https://hibernate.org/validator/)
 - [Hibernate](https://hibernate.org/)
+- [Maven](https://maven.apache.org/)
+- [JUnit](https://junit.org/junit5/)
+- [JWT](https://jwt.io/)
 
 ## Database
 - [PostgreSQL](https://www.postgresql.org/)
+
+### Database Schema
+![Database Schema](./db-schema.jpg)
 

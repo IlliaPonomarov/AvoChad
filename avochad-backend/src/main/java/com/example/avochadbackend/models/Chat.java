@@ -39,6 +39,10 @@ public class Chat {
     @JsonManagedReference
     private List<User> users;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Channel channel;
+
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -47,9 +51,7 @@ public class Chat {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JsonBackReference
-    private Channel channel;
+    
 
     public Chat() {}
 
@@ -96,6 +98,24 @@ public class Chat {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
+
+    
 
     @Override
     public boolean equals(Object o) {

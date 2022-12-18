@@ -19,7 +19,7 @@ public class MyUserDetails implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.user.getRole().equals(Role.ANONYMOUS) )
+        if (this.user.getRole().equals(Role.ADMIN) )
             return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
             
         else if (this.user.getRole().equals(Role.USER) )

@@ -45,6 +45,7 @@ public class UserController {
         return userService.findAll();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public Optional<User> findUserById(@PathVariable long id) {
         Optional<User> user = userService.findById(id);
@@ -88,6 +89,7 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/")
     public ResponseEntity<User> create(@RequestBody @Valid User user, BindingResult bindingResult) {
         if(bindingResult.hasErrors()){

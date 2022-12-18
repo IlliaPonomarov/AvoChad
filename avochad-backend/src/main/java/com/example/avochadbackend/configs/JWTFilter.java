@@ -36,7 +36,6 @@ public class JWTFilter extends OncePerRequestFilter{
                 String authHeader = request.getHeader("Authorization");
 
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                    System.out.println("Yes");
                     StringBuilder token = new StringBuilder(authHeader.substring(7));
                     String jwtToken = token.toString();
                     System.out.println(jwtToken);
@@ -64,7 +63,7 @@ public class JWTFilter extends OncePerRequestFilter{
                 } else
                      System.out.println("No token found");
                 filterChain.doFilter(request, response);
-                return;
+
     }
 
 
