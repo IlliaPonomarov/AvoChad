@@ -60,7 +60,7 @@ This endpoint is used to get a chat by id. \
 - [Hibernate](https://hibernate.org/)
 - [Maven](https://maven.apache.org/)
 - [JUnit](https://junit.org/junit5/)
-- [JWT](https://jwt.io/)
+
 
 ## Database
 - [PostgreSQL](https://www.postgresql.org/)
