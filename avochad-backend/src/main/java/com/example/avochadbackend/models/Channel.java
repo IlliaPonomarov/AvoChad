@@ -22,14 +22,6 @@ public class Channel {
     @Size(min = 2, max = 254, message = "Title must be between 2 and 254 characters")
     private String title;
 
-    @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-
-    @Column(name = "updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
-
     @OneToOne(mappedBy = "channel", cascade = CascadeType.ALL)
     @JoinColumn(name = "chat_id")
     @JsonBackReference
@@ -40,7 +32,13 @@ public class Channel {
     @JsonBackReference
     private Organization organization;
 
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
 
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     public Long getId() {
         return id;

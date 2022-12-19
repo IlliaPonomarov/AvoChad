@@ -50,6 +50,23 @@ This endpoint is used to get a chat by id. \
 \
 `POST /` This endpoint is used to create a chat. \
 
+## Channel Controller
+This controller is used to manage the channels.
+
+### Endpoints
+`GET /` This endpoint is used to get all channels. \
+\
+`GET /id` This endpoint is used to get a channel by id. \
+\
+`POST /` This endpoint is used to create a channel. \
+\
+`PUT /id` This endpoint is used to update a channel by id. \
+\
+`Delete /id` This endpoint is used to delete a channel by id. \
+
+## Message Controller
+
+### Endpoints
 
 # Frameworks and Libraries
 - [Spring Boot](https://spring.io/projects/spring-boot)
